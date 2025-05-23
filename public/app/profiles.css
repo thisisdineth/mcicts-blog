@@ -1,0 +1,202 @@
+/* profiles.css */
+
+.profile-page-container .left-sidebar.profile-nav-stub {
+    justify-content: flex-start; /* Align items to top */
+}
+.profile-page-container .left-sidebar.profile-nav-stub .sidebar-logo a {
+    text-decoration: none;
+    color: var(--primary-neon);
+}
+
+
+.profile-main {
+    border-left: 1px solid var(--glassmorphism-border); /* Keep borders for consistency */
+    border-right: 1px solid var(--glassmorphism-border);
+}
+
+.profile-header-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-medium);
+}
+
+.profile-header-content {
+    background-color: var(--glassmorphism-bg-light);
+    padding: 30px;
+    border-radius: var(--border-radius-main);
+    margin-bottom: 30px;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start; /* Align items to the top */
+    border: 1px solid var(--glassmorphism-border);
+    position: relative;
+}
+
+.profile-avatar-large {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid var(--primary-neon);
+    box-shadow: 0 0 15px var(--accent-glow);
+    object-fit: cover;
+}
+
+.profile-info h1 {
+    font-family: var(--font-headings);
+    color: var(--text-heading);
+    font-size: 2.2em;
+    margin: 0 0 5px 0;
+    text-shadow: 0 0 5px var(--primary-neon);
+}
+
+.profile-callsign {
+    color: var(--secondary-neon);
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.profile-detail {
+    color: var(--text-light);
+    font-size: 0.95em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+.profile-detail i {
+    color: var(--primary-neon);
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+.profile-detail span {
+    color: var(--text-medium);
+}
+
+#edit-profile-button-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+.btn-edit-profile {
+    background-color: var(--secondary-neon);
+    color: var(--text-heading);
+    padding: 8px 15px;
+    font-size: 0.9em;
+}
+.btn-edit-profile:hover {
+     background-color: #ff40ff;
+}
+
+
+.profile-threads-section h2 {
+    font-family: var(--font-headings);
+    color: var(--primary-neon);
+    font-size: 1.6em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--glassmorphism-border);
+    text-align: center;
+}
+.profile-threads-section .feed-threads {
+    padding-top: 10px; /* Add some padding if header is sticky */
+}
+
+/* Responsive adjustments for profile page */
+@media (max-width: 992px) { /* Tablet: left sidebar is collapsed */
+    .profile-page-container .app-container { /* Override general app-container */
+        grid-template-columns: 80px 1fr !important;
+    }
+    .profile-sidebar-stub {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) { /* Mobile */
+    .profile-page-container .app-container {
+         grid-template-columns: 1fr !important;
+    }
+    .profile-page-container .left-sidebar.profile-nav-stub {
+        /* Keep it as a top bar or a back button only */
+        position: fixed;
+        top:0; left:0; right:0;
+        height: 60px;
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start; /* Align back button to left */
+        padding: 0 15px;
+        border-bottom: 1px solid var(--glassmorphism-border);
+        border-right: none;
+        z-index: 100;
+    }
+    .profile-page-container .left-sidebar.profile-nav-stub .nav-links {
+         margin-left: 10px;
+    }
+     .profile-page-container .left-sidebar.profile-nav-stub .nav-link span {
+        display: inline-block !important; /* Show "Back to Feed" text */
+     }
+     .profile-page-container .left-sidebar.profile-nav-stub .nav-link i {
+         margin-bottom: 0;
+     }
+
+
+    .profile-main {
+        padding-top: 75px; /* Space for the fixed top nav/back button */
+        height: auto; /* Allow content to determine height */
+        overflow-y: visible; /* No separate scroll for main on mobile profile */
+    }
+    .profile-header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .profile-avatar-large {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 15px;
+    }
+    .profile-info h1 { font-size: 1.8em; }
+    .profile-callsign { font-size: 1em; }
+    #edit-profile-button-container {
+        position: static; /* Reset absolute positioning */
+        margin-top: 20px;
+    }
+}
+
+/* Add styles for suggestion list items if needed */
+.suggestion-user-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-light);
+    padding: 8px 0; /* Match li padding */
+}
+.suggestion-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--primary-neon);
+}
+.suggestion-user-info strong {
+    display: block;
+    font-weight: 500;
+}
+.suggestion-user-info span {
+    font-size: 0.85em;
+    color: var(--text-medium);
+}
+.suggestion-list li:hover .suggestion-user-link {
+    color: var(--primary-neon);
+}
+.spinner-small { /* For suggestion loading */
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border-left-color: var(--secondary-neon);
+    animation: spin 0.8s ease infinite;
+    margin: 5px auto;
+}

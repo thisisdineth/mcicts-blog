@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to MCICT World - Explore the Universe of Knowledge!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+    <div class="stars-bg"></div>
+    <div class="aurora-bg"></div>
+
+    <header class="landing-header">
+        <div class="container header-container">
+            <div class="landing-logo">
+                <i class="fas fa-meteor"></i>
+                <span>MCICT World</span>
+            </div>
+            <nav class="landing-nav">
+                <a href="./auth/index.html#signup" class="btn btn-secondary btn-sm">Sign In</a>
+                <a href="./auth/index.html" class="btn btn-primary btn-sm">Launch Your Journey (Sign Up)</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="landing-main">
+        <section class="hero-section">
+            <div class="container hero-content">
+                <h1 class="hero-headline">
+                    Navigate the <span class="highlight-text">Cosmos of Questions.</span><br>
+                    Conquer Your <span class="highlight-text">MCICT Universe.</span>
+                </h1>
+                <p class="hero-subheadline">
+                    MCICT World is your interstellar hub for asking, answering, and exploring study questions.
+                    Connect with fellow learners and chart your course to academic success!
+                </p>
+                <div class="hero-cta">
+                    <a href="./auth/index.html#signup" class="btn btn-primary btn-lg">Join the Fleet Now!</a>
+                    <a href="./auth/index.html" class="btn btn-outline btn-lg">Already an Explorer? Sign In</a>
+                </div>
+            </div>
+            <div class="hero-graphic">
+                <i class="fas fa-rocket hero-rocket-icon"></i>
+                <i class="fas fa-brain hero-brain-icon"></i>
+                <i class="fas fa-atom hero-atom-icon"></i>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <div class="container">
+                <h2 class="section-title">Discover Your Galactic Tools</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-question-circle feature-icon"></i>
+                        <h3>Ask & Get Answers</h3>
+                        <p>Post your toughest MCICT questions and receive insights from a community of space-faring scholars.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-users-cog feature-icon"></i>
+                        <h3>Collaborate & Connect</h3>
+                        <p>Join study groups, follow topics, and build your network with other ambitious explorers in your field.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-lightbulb feature-icon"></i>
+                        <h3>Explore & Learn</h3>
+                        <p>Dive into a vast repository of questions, answers, and discussions. Expand your knowledge horizons!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container cta-content">
+                <h2 class="section-title-light">Ready to Launch Your Learning Odyssey?</h2>
+                <p>Your crewmates and a universe of knowledge await. Sign up today and become a part of MCICT World!</p>
+                <a href="./auth/index.html" class="btn btn-secondary btn-lg">Create Your Free Account</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="landing-footer">
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> MCICT World Galactic Archives. All rights reserved.</p>
+            <div class="footer-links">
+                <p>Colombo, Sri Lanka Command Center | Current Time: <span id="current-time"></span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        // Simple current time display
+        function updateTime() {
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                const now = new Date();
+                timeElement.textContent = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Colombo', hour: '2-digit', minute:'2-digit' });
+            }
+        }
+        updateTime();
+        setInterval(updateTime, 60000); // Update every minute
+
+        // If the auth.html link includes #signup, try to switch to the signup form on that page.
+        // This requires auth.js to handle the hash.
+        document.querySelectorAll('a[href="./auth/index.html#signup"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                localStorage.setItem('showSignupForm', 'true');
+            });
+        });
+
+    </script>
+</body>
+</html>
