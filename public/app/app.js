@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sidebarUserAvatar && currentUserData.profilePictureURL) {
                     sidebarUserAvatar.src = currentUserData.profilePictureURL;
                 } else if (sidebarUserAvatar) {
-                    sidebarUserAvatar.src = 'placeholder-avatar.png';
+                    sidebarUserAvatar.src = '../img/avatar.png';
                 }
             } else {
                 // Fallback if user data is not yet in DB (e.g., right after Google Sign-Up)
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sidebarUserName) sidebarUserName.textContent = currentUser.displayName || 'Explorer';
                 if (sidebarUserCallsign) sidebarUserCallsign.textContent = `@${generateCallsign(currentUser.displayName || 'User')}`;
                 if (sidebarUserAvatar && currentUser.photoURL) sidebarUserAvatar.src = currentUser.photoURL;
-                else if (sidebarUserAvatar) sidebarUserAvatar.src = 'placeholder-avatar.png';
+                else if (sidebarUserAvatar) sidebarUserAvatar.src = '../img/avatar.png';
             }
         }, error => console.error("Error fetching user profile:", error));
     }
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const threadData = {
                 userId: currentUser.uid,
                 userName: currentUserData.name || currentUser.displayName || 'Explorer',
-                userAvatar: currentUserData.profilePictureURL || currentUser.photoURL || 'placeholder-avatar.png',
+                userAvatar: currentUserData.profilePictureURL || currentUser.photoURL || '../img/avatar.png',
                 callsign: currentUserData.callsign || `@${generateCallsign(currentUserData.name || currentUser.displayName || 'User')}`,
                 content: content,
                 imageURL: imageURL,
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         threadDiv.innerHTML = `
             <div class="thread-header">
                 <a href="${profileLink}" class="thread-user-link">
-                    <img src="${threadData.userAvatar || 'placeholder-avatar.png'}" alt="${threadData.userName}" class="thread-avatar">
+                    <img src="${threadData.userAvatar || '../img/avatar.png'}" alt="${threadData.userName}" class="thread-avatar">
                 </a>
                 <div class="thread-user-info">
                     <a href="${profileLink}" class="thread-user-link">
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const profileLink = `profiles.html?uid=${user.uid}`;
                         li.innerHTML = `
                             <a href="${profileLink}" class="suggestion-user-link">
-                                <img src="${user.profilePictureURL || 'placeholder-avatar.png'}" alt="${user.name}" class="suggestion-avatar">
+                                <img src="${user.profilePictureURL || '../img/avatar.png'}" alt="${user.name}" class="suggestion-avatar">
                                 <div class="suggestion-user-info">
                                     <strong>${user.name}</strong>
                                     <span>${user.callsign || '@' + generateCallsign(user.name)}</span>
