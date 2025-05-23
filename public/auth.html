@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In / Sign Up - MCICT World</title>
+    <link rel="stylesheet" href="auth.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="auth-wrapper">
+            <div class="auth-header">
+                <h1>MCICT World</h1>
+                <p>Study Questions Asking Platform</p>
+            </div>
+
+            <div class="auth-toggle">
+                <button id="show-signin-btn" class="active">Sign In</button>
+                <button id="show-signup-btn">Sign Up</button>
+            </div>
+
+            <div id="signin-form-container" class="form-container active-form">
+                <h2>Sign In</h2>
+                <form id="signin-form">
+                    <div class="input-group">
+                        <label for="signin-email">Email</label>
+                        <input type="email" id="signin-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signin-password">Password</label>
+                        <input type="password" id="signin-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                    <p class="forgot-password"><a href="#" id="forgot-password-link">Forgot Password?</a></p>
+                </form>
+                <div class="social-signin">
+                    <p>Or sign in with</p>
+                    <button id="google-signin-btn-signin" class="btn btn-google">
+                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20" height="20">
+                        Sign In with Google
+                    </button>
+                </div>
+            </div>
+
+            <div id="signup-form-container" class="form-container">
+                <h2>Create Account</h2>
+                <form id="signup-form">
+                    <div class="input-group">
+                        <label for="signup-name">Name</label>
+                        <input type="text" id="signup-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required minlength="6">
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-confirm-password">Confirm Password</label>
+                        <input type="password" id="signup-confirm-password" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-age">Age</label>
+                        <input type="number" id="signup-age" min="5" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-class">Class (e.g., Grade 10, A/L)</label>
+                        <input type="text" id="signup-class" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-stream">Subject Stream (Optional, e.g., Science, Arts)</label>
+                        <input type="text" id="signup-stream">
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-profile-picture">Profile Picture</label>
+                        <input type="file" id="signup-profile-picture" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </form>
+                <div class="social-signin">
+                    <p>Or sign up with</p>
+                    <button id="google-signin-btn-signup" class="btn btn-google">
+                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20" height="20">
+                        Sign Up with Google
+                    </button>
+                </div>
+            </div>
+
+            <div id="google-signup-extra-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Additional Information</h2>
+                    <p>Please provide your class to complete your Google Sign Up.</p>
+                    <form id="google-extra-info-form">
+                        <div class="input-group">
+                            <label for="google-signup-class">Class (e.g., Grade 10, A/L)</label>
+                            <input type="text" id="google-signup-class" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="google-signup-age">Age</label>
+                            <input type="number" id="google-signup-age" min="5" max="100">
+                        </div>
+                         <div class="input-group">
+                            <label for="google-signup-stream">Subject Stream (Optional)</label>
+                            <input type="text" id="google-signup-stream">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Information</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="message-container" class="message"></div>
+
+        </div>
+    </div>
+    <script src="auth.js"></script>
+</body>
+</html>
