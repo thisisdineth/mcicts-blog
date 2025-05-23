@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join MCICT World</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Join the Cosmos - MCICT World</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
     <link rel="stylesheet" href="auth.css">
-    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-storage-compat.js"></script>
 </head>
 <body>
+    <div class="stars-bg"></div> 
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <i class="fas fa-brain-circuit" style="font-size: 30px; color: #007bff; margin-bottom: 10px;"></i> <h1>MCICT World</h1>
-                <p>Study Questions Asking Platform</p>
+                <i class="fas fa-meteor" style="font-size: 36px; margin-bottom: 15px; display: block;"></i>
+                <h1>MCICT World</h1>
+                <p>Explore the Universe of Questions</p>
             </div>
 
             <div class="auth-toggle">
@@ -28,75 +31,75 @@
                 </div>
 
             <div id="signin-form-container" class="form-container active-form">
-                <h2>Welcome Back!</h2>
+                <h2>Welcome Back, Explorer!</h2>
                 <form id="signin-form">
                     <div class="input-group">
-                        <label for="signin-email"><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="signin-email" placeholder="you@example.com" required>
+                        <label for="signin-email"><i class="fas fa-user-astronaut"></i> Email / Callsign</label>
+                        <input type="email" id="signin-email" placeholder="your.callsign@galaxy.com" required>
                     </div>
                     <div class="input-group">
-                        <label for="signin-password"><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="signin-password" placeholder="Your Password" required>
+                        <label for="signin-password"><i class="fas fa-key"></i> Access Code</label>
+                        <input type="password" id="signin-password" placeholder="Your Secret Code" required>
                     </div>
                     <button type="submit" class="btn btn-primary btn-submit" id="signin-submit-btn">
-                        <span class="btn-text">Sign In</span>
+                        <span class="btn-text">Engage Warp Drive</span>
                         <span class="btn-loader" style="display: none;"></span>
                     </button>
-                    <p class="forgot-password"><a href="#" id="forgot-password-link">Forgot Password?</a></p>
+                    <p class="forgot-password"><a href="#" id="forgot-password-link">Lost in Space? (Reset Code)</a></p>
                 </form>
                 <div class="social-auth">
-                    <span class="divider-text">Or continue with</span>
+                    <span class="divider-text"><span>Or connect via Hyperspace</span></span>
                     <button id="google-signin-btn-signin" class="btn btn-google">
                         <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
-                        Sign In with Google
+                        Log In with Google
                     </button>
                 </div>
             </div>
 
             <div id="signup-form-container" class="form-container">
-                <h2>Create Your Account</h2>
+                <h2>Join the Fleet!</h2>
                 <form id="signup-form">
                     <div class="input-group">
-                        <label for="signup-name"><i class="fas fa-user"></i> Full Name</label>
-                        <input type="text" id="signup-name" placeholder="John Doe" required>
+                        <label for="signup-name"><i class="fas fa-id-badge"></i> Full Name / Callsign</label>
+                        <input type="text" id="signup-name" placeholder="Nova Stargazer" required>
                     </div>
                     <div class="input-group">
-                        <label for="signup-email"><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="signup-email" placeholder="you@example.com" required>
+                        <label for="signup-email"><i class="fas fa-satellite-dish"></i> Email Address</label>
+                        <input type="email" id="signup-email" placeholder="your.signal@universe.net" required>
                     </div>
                     <div class="input-group">
-                        <label for="signup-password"><i class="fas fa-lock"></i> Password</label>
+                        <label for="signup-password"><i class="fas fa-shield-halved"></i> Secure Access Code</label>
                         <input type="password" id="signup-password" placeholder="Min. 6 characters" required minlength="6">
                     </div>
                     <div class="input-group">
-                        <label for="signup-confirm-password"><i class="fas fa-check-circle"></i> Confirm Password</label>
-                        <input type="password" id="signup-confirm-password" placeholder="Retype password" required>
+                        <label for="signup-confirm-password"><i class="fas fa-user-check"></i> Confirm Code</label>
+                        <input type="password" id="signup-confirm-password" placeholder="Retype access code" required>
                     </div>
                     <div class="form-row">
                         <div class="input-group half-width">
-                            <label for="signup-age"><i class="fas fa-birthday-cake"></i> Age</label>
-                            <input type="number" id="signup-age" placeholder="Your Age" min="5" max="100">
+                            <label for="signup-age"><i class="fas fa-hourglass-half"></i> Age (Cycles)</label>
+                            <input type="number" id="signup-age" placeholder="Your Age" min="5" max="999">
                         </div>
                         <div class="input-group half-width">
-                            <label for="signup-class"><i class="fas fa-graduation-cap"></i> Class</label>
-                            <input type="text" id="signup-class" placeholder="e.g., Grade 10, A/L" required>
+                            <label for="signup-class"><i class="fas fa-shuttle-space"></i> Class / Rank</label>
+                            <input type="text" id="signup-class" placeholder="e.g., Cadet, Explorer" required>
                         </div>
                     </div>
                     <div class="input-group">
-                        <label for="signup-stream"><i class="fas fa-stream"></i> Subject Stream <small>(Optional)</small></label>
-                        <input type="text" id="signup-stream" placeholder="e.g., Science, Arts">
+                        <label for="signup-stream"><i class="fas fa-atom"></i> Subject Stream <small>(Optional)</small></label>
+                        <input type="text" id="signup-stream" placeholder="e.g., Astro-Physics, Xenobiology">
                     </div>
                     <div class="input-group">
-                        <label for="signup-profile-picture"><i class="fas fa-camera"></i> Profile Picture <small>(Optional)</small></label>
+                        <label for="signup-profile-picture"><i class="fas fa-camera-retro"></i> Holo-Badge (Profile Pic) <small>(Optional)</small></label>
                         <input type="file" id="signup-profile-picture" accept="image/*">
                     </div>
                     <button type="submit" class="btn btn-primary btn-submit" id="signup-submit-btn">
-                        <span class="btn-text">Create Account</span>
+                        <span class="btn-text">Register Your Starship</span>
                         <span class="btn-loader" style="display: none;"></span>
                     </button>
                 </form>
                 <div class="social-auth">
-                    <span class="divider-text">Or sign up with</span>
+                    <span class="divider-text"><span>Or beam aboard with</span></span>
                     <button id="google-signin-btn-signup" class="btn btn-google">
                          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
                         Sign Up with Google
@@ -107,22 +110,22 @@
             <div id="google-signup-extra-modal" class="modal">
                 <div class="modal-content">
                     <button class="close-button">&times;</button>
-                    <h2>Almost there!</h2>
-                    <p>Please provide a few more details to complete your Google Sign Up.</p>
+                    <h2>Final Systems Check!</h2>
+                    <p>Just a bit more data for your Galactic ID.</p>
                     <form id="google-extra-info-form">
                         <div class="input-group">
-                            <label for="google-signup-class"><i class="fas fa-graduation-cap"></i> Class</label>
-                            <input type="text" id="google-signup-class" placeholder="e.g., Grade 10, A/L" required>
+                            <label for="google-signup-class"><i class="fas fa-shuttle-space"></i> Class / Rank</label>
+                            <input type="text" id="google-signup-class" placeholder="e.g., Cadet, Explorer" required>
                         </div>
                          <div class="input-group">
-                            <label for="google-signup-age"><i class="fas fa-birthday-cake"></i> Age</label>
-                            <input type="number" id="google-signup-age" placeholder="Your Age" min="5" max="100" required>
+                            <label for="google-signup-age"><i class="fas fa-hourglass-half"></i> Age (Cycles)</label>
+                            <input type="number" id="google-signup-age" placeholder="Your Age" min="5" max="999" required>
                         </div>
                          <div class="input-group">
-                            <label for="google-signup-stream"><i class="fas fa-stream"></i> Subject Stream <small>(Optional)</small></label>
-                            <input type="text" id="google-signup-stream" placeholder="e.g., Science, Arts">
+                            <label for="google-signup-stream"><i class="fas fa-atom"></i> Subject Stream <small>(Optional)</small></label>
+                            <input type="text" id="google-signup-stream" placeholder="e.g., Astro-Physics">
                         </div>
-                        <button type="submit" class="btn btn-primary">Save & Continue</button>
+                        <button type="submit" class="btn btn-primary">Confirm & Launch</button>
                     </form>
                 </div>
             </div>

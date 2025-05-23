@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     // -------------------------------------------------------------------------
     // !! IMPORTANT: Firebase Configuration !!
-    // Replace with your actual Firebase project configuration
+    // User's Firebase Config (as provided)
     // -------------------------------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyAcGV4zQzJ_-fqR2V0tSWVKB3uzMV6oxTU",
@@ -86,9 +86,9 @@ const firebaseConfig = {
     }
 
     // Display messages
-    function showMessage(message, type = 'error', duration = 5000) {
+    function showMessage(message, type = 'error', duration = 7000) { // Increased default duration
         clearTimeout(messageTimeout);
-        messageArea.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> <span>${message}</span>`;
+        messageArea.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> <span>${message}</span>`; // Changed error icon
         messageArea.className = `message-area show ${type}`;
         if (duration > 0) {
             messageTimeout = setTimeout(clearMessages, duration);
@@ -97,10 +97,8 @@ const firebaseConfig = {
 
     function clearMessages() {
         messageArea.className = 'message-area';
-        // messageArea.textContent = ''; // Keep structure for potential fixed height
     }
 
-    // Toggle button loading state
     function toggleButtonLoading(button, isLoading) {
         const textSpan = button.querySelector('.btn-text');
         const loaderSpan = button.querySelector('.btn-loader');
@@ -115,8 +113,6 @@ const firebaseConfig = {
         }
     }
 
-
-    // --- Sign Up with Email and Password ---
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearMessages();
@@ -127,22 +123,22 @@ const firebaseConfig = {
         const password = signupPasswordInput.value;
         const confirmPassword = signupConfirmPasswordInput.value;
         const age = signupAgeInput.value;
-        const studentClass = signupClassInput.value.trim(); // Renamed to avoid conflict with 'class' keyword
+        const studentClass = signupClassInput.value.trim();
         const stream = signupStreamInput.value.trim();
         const profilePictureFile = signupProfilePictureInput.files[0];
 
         if (password !== confirmPassword) {
-            showMessage('Passwords do not match.');
+            showMessage('Access Codes do not match, Cadet.');
             toggleButtonLoading(signupSubmitBtn, false);
             return;
         }
         if (password.length < 6) {
-            showMessage('Password should be at least 6 characters long.');
+            showMessage('Access Code must be at least 6 characters, Explorer.');
             toggleButtonLoading(signupSubmitBtn, false);
             return;
         }
-        if (!name || !email || !studentClass) { // Age is optional here if not explicitly required
-            showMessage('Please fill in all required fields (Name, Email, Class).');
+        if (!name || !email || !studentClass) {
+            showMessage('Callsign, Email, and Class/Rank are mandatory for fleet registration.');
             toggleButtonLoading(signupSubmitBtn, false);
             return;
         }
@@ -151,7 +147,7 @@ const firebaseConfig = {
             const userCredential = await auth.createUserWithEmailAndPassword(email, password);
             const user = userCredential.user;
 
-            showMessage('Verification email sent. Please check your inbox.', 'success', 10000);
+            showMessage('Verification signal sent. Check your comms array (inbox).', 'success', 10000);
             await user.sendEmailVerification();
 
             let profilePictureURL = '';
@@ -172,22 +168,21 @@ const firebaseConfig = {
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             });
 
-            showMessage('Sign up successful! A verification email has been sent. Please verify your email before signing in.', 'success', 10000);
+            showMessage('Registration successful! Verification signal dispatched. Confirm before logging in.', 'success', 10000);
             signupForm.reset();
 
         } catch (error) {
             console.error("Sign up error:", error);
             if (error.code === 'auth/email-already-in-use') {
-                showMessage('This email address is already in use. Try signing in or use a different email.');
+                showMessage('This email signal is already registered. Try logging in or use a different frequency.');
             } else {
-                showMessage(error.message || 'An unknown error occurred during sign up.');
+                showMessage(error.message || 'A cosmic anomaly occurred during sign up.');
             }
         } finally {
             toggleButtonLoading(signupSubmitBtn, false);
         }
     });
 
-    // --- Sign In with Email and Password ---
     signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearMessages();
@@ -197,7 +192,7 @@ const firebaseConfig = {
         const password = signinPasswordInput.value;
 
         if (!email || !password) {
-            showMessage('Please enter both email and password.');
+            showMessage('Enter your Email/Callsign and Access Code to proceed.');
             toggleButtonLoading(signinSubmitBtn, false);
             return;
         }
@@ -207,34 +202,32 @@ const firebaseConfig = {
             const user = userCredential.user;
 
             if (user.emailVerified) {
-                showMessage('Sign in successful! Redirecting...', 'success');
-                setTimeout(() => window.location.href = 'app.html', 1500);
+                showMessage('Access granted! Preparing for warp...', 'success');
+                setTimeout(() => window.location.href = 'app.html', 2000);
             } else {
                 await auth.signOut();
-                showMessage('Please verify your email before signing in. A new verification email has been sent.', 'error', 10000);
+                showMessage('Comms link not verified. Please confirm your email signal. Resending verification.', 'error', 10000);
                 await user.sendEmailVerification();
             }
         } catch (error) {
             console.error("Sign in error:", error);
             if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                showMessage('Invalid email or password.');
+                showMessage('Invalid Callsign or Access Code. Check your credentials.');
             } else if (error.code === 'auth/too-many-requests') {
-                showMessage('Too many login attempts. Please try again later or reset your password.');
+                showMessage('Too many login attempts. Security lockout initiated. Try later or reset code.');
             } else {
-                showMessage(error.message || 'An unknown error occurred during sign in.');
+                showMessage(error.message || 'Unknown space-time distortion during login.');
             }
         } finally {
             toggleButtonLoading(signinSubmitBtn, false);
         }
     });
 
-    // --- Google Sign-In/Sign-Up ---
     const handleGoogleSignIn = async (button) => {
         clearMessages();
-        button.disabled = true; // Disable the clicked Google button
+        button.disabled = true;
         const otherGoogleButton = (button === googleSigninBtnSignin) ? googleSigninBtnSignup : googleSigninBtnSignin;
         otherGoogleButton.disabled = true;
-
 
         const provider = new firebase.auth.GoogleAuthProvider();
         try {
@@ -246,8 +239,8 @@ const firebaseConfig = {
                 const snapshot = await userRef.once('value');
 
                 if (snapshot.exists() && snapshot.val().class && snapshot.val().age) {
-                    showMessage('Google Sign in successful! Redirecting...', 'success');
-                     setTimeout(() => window.location.href = 'app.html', 1500);
+                    showMessage('Google Hyperspace link established! Redirecting...', 'success');
+                     setTimeout(() => window.location.href = 'app.html', 2000);
                 } else {
                     tempGoogleUser = user;
                     googleSignupClassInput.value = snapshot.val()?.class || '';
@@ -257,19 +250,19 @@ const firebaseConfig = {
                 }
             } else {
                 await auth.signOut();
-                showMessage('Google account not verified. Please ensure your Google account is active.');
+                showMessage('Google account signal not verified. Ensure your Google comms are active.');
             }
         } catch (error) {
             console.error("Google Sign-In error:", error);
             if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-                showMessage('Google Sign-In process was cancelled.');
+                showMessage('Google connection attempt aborted by user.');
             } else if (error.code === 'auth/account-exists-with-different-credential') {
-                showMessage('An account already exists with this email address using a different sign-in method.');
+                showMessage('This email signal is already linked via another method. Try that one.');
             } else {
-                showMessage('Error with Google Sign-In: ' + (error.message || 'Unknown error.'));
+                showMessage('Error with Google Hyperspace link: ' + (error.message || 'Unknown interference.'));
             }
         } finally {
-             button.disabled = false; // Re-enable the clicked Google button
+             button.disabled = false;
              otherGoogleButton.disabled = false;
         }
     };
@@ -277,8 +270,6 @@ const firebaseConfig = {
     googleSigninBtnSignin.addEventListener('click', () => handleGoogleSignIn(googleSigninBtnSignin));
     googleSigninBtnSignup.addEventListener('click', () => handleGoogleSignIn(googleSigninBtnSignup));
 
-
-    // --- Handle Additional Info for Google Sign Up ---
     googleExtraForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const studentClass = googleSignupClassInput.value.trim();
@@ -286,27 +277,26 @@ const firebaseConfig = {
         const stream = googleSignupStreamInput.value.trim();
 
         if (!studentClass || !age) {
-            alert('Please provide your class and age.');
+            alert('Please provide your Class/Rank and Age (Cycles) to finalize Galactic ID.');
             return;
         }
-
         if (!tempGoogleUser) {
-            showMessage('Error: No Google user data found. Please try signing in again.', 'error');
+            showMessage('Error: No Google user data found. Please try initiating the Hyperspace link again.', 'error');
             googleExtraModal.classList.remove('show');
             return;
         }
 
         const submitButton = googleExtraForm.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
         submitButton.disabled = true;
-        submitButton.textContent = 'Saving...';
-
+        submitButton.textContent = 'Transmitting...';
 
         try {
             const user = tempGoogleUser;
             const userRef = database.ref('users/' + user.uid);
             const userData = {
                 uid: user.uid,
-                name: user.displayName || 'Google User',
+                name: user.displayName || 'Google Explorer',
                 email: user.email,
                 profilePictureURL: user.photoURL || null,
                 age: parseInt(age),
@@ -316,27 +306,25 @@ const firebaseConfig = {
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             };
 
-            // Check if user data already exists to merge, otherwise set
             const snapshot = await userRef.once('value');
             if (snapshot.exists()) {
-                await userRef.update(userData); // Update if exists
+                await userRef.update(userData);
             } else {
-                await userRef.set(userData); // Set if new
+                await userRef.set(userData);
             }
-
 
             googleExtraModal.classList.remove('show');
             googleExtraForm.reset();
             tempGoogleUser = null;
-            showMessage('Information saved! Redirecting...', 'success');
-            setTimeout(() => window.location.href = 'app.html', 1500);
+            showMessage('Galactic ID updated! Preparing for launch...', 'success');
+            setTimeout(() => window.location.href = 'app.html', 2000);
 
         } catch (error) {
             console.error("Error saving Google user extra info:", error);
-            alert('Failed to save information: ' + error.message);
+            alert('Failed to transmit data: ' + error.message);
         } finally {
             submitButton.disabled = false;
-            submitButton.textContent = 'Save & Continue';
+            submitButton.textContent = originalButtonText;
         }
     });
 
@@ -345,7 +333,7 @@ const firebaseConfig = {
             googleExtraModal.classList.remove('show');
             googleExtraForm.reset();
             if (tempGoogleUser) {
-                showMessage('Google sign up process was not completed.', 'error');
+                showMessage('Google registration sequence was not completed.', 'error');
             }
             tempGoogleUser = null;
         }
@@ -355,49 +343,41 @@ const firebaseConfig = {
             googleExtraModal.classList.remove('show');
             googleExtraForm.reset();
             if (tempGoogleUser) {
-                showMessage('Google sign up process was not completed.', 'error');
+                showMessage('Google registration sequence incomplete.', 'error');
             }
             tempGoogleUser = null;
         }
     }
 
-
-    // --- Forgot Password ---
     forgotPasswordLink.addEventListener('click', async (e) => {
         e.preventDefault();
         clearMessages();
-        const email = prompt("Please enter your email address to reset your password:");
+        const email = prompt("Enter your registered email signal to request a new Access Code:");
 
-        if (email === null) return; // User cancelled prompt
+        if (email === null) return;
 
         if (email.trim()) {
             try {
                 await auth.sendPasswordResetEmail(email.trim());
-                showMessage('Password reset email sent. Please check your inbox.', 'success', 10000);
+                showMessage('New Access Code request transmitted. Check your comms array.', 'success', 10000);
             } catch (error) {
                 console.error("Password reset error:", error);
                 if (error.code === 'auth/user-not-found') {
-                    showMessage('No user found with this email address.');
+                    showMessage('No registered signal found for this email address.');
                 } else {
-                    showMessage('Error sending password reset email: ' + (error.message || 'Unknown error.'));
+                    showMessage('Error transmitting Access Code request: ' + (error.message || 'Unknown anomaly.'));
                 }
             }
         } else {
-             showMessage('Please enter a valid email address.');
+             showMessage('Please enter a valid email signal.');
         }
     });
 
-    // Auth State Observer (Optional - for auto-redirect if already logged in and verified)
     auth.onAuthStateChanged(user => {
         if (user && user.emailVerified) {
-            // If user is on auth.html but already logged in and verified,
-            // and not in the middle of a Google extra info step.
             const currentPath = window.location.pathname.split("/").pop();
             if (currentPath === 'auth.html' && !googleExtraModal.classList.contains('show')) {
-                // console.log("User already signed in and verified, redirecting from auth page.");
-                // window.location.href = 'app.html';
-                // Be cautious with auto-redirects as it might be unexpected.
-                // The current flow handles redirection after explicit actions.
+                // console.log("User is already logged in and verified on auth page.");
             }
         }
     });
