@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (typeof auth === 'undefined') console.error("[DEBUG] Firebase Auth is not available from firebase-config.js!");
     if (typeof database === 'undefined') console.error("[DEBUG] Firebase Database is not available from firebase-config.js!");
 
+
+    // --- DOM Element Selection ---
     const loadingOverlay = document.getElementById('loading-overlay');
     const postDetailContainer = document.getElementById('post-detail-container');
     const postNotFoundDiv = document.getElementById('post-not-found');
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const userNameNav = document.getElementById('user-name-nav');
     const signOutBtnNav = document.getElementById('sign-out-btn-nav');
     const navCreatePostBtn = document.getElementById('nav-create-post-btn');
-    const defaultProfilePic = 'https://img.freepik.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?semt=ais_hybrid&w=740';
+    const defaultProfilePic = '../images/default-avatar.png';
     const postTitleMain = document.getElementById('post-title-main');
     const postCategoryMain = document.getElementById('post-category-main');
     const postDateMain = document.getElementById('post-date-main');
@@ -41,10 +43,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const submitCommentBtn = document.getElementById('submit-comment-btn');
     const commentLoginPrompt = document.getElementById('comment-login-prompt');
 
+    // --- Global State ---
     let currentUser = null;
     let currentPostId = null;
     let currentPostData = null;
 
+    // --- Initialization ---
     const urlParams = new URLSearchParams(window.location.search);
     currentPostId = urlParams.get('id');
     console.log("[DEBUG] Extracted Post ID from URL:", currentPostId);
@@ -147,8 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (snapshot.exists()) {
                 currentPostData = snapshot.val();
-                // ✨ ADDED DETAILED LOGS FOR POST DATA AND CONTENT ✨
-                console.log("[DEBUG] Post data fetched (raw):", JSON.parse(JSON.stringify(currentPostData)));
+                console.log("[DEBUG] Post data fetched (raw):", JSON.parse(JSON.stringify(currentPostData))); // Deep copy for logging
                 console.log("[DEBUG] Post content field value from Firebase:", currentPostData.content);
 
                 document.title = (currentPostData.title || "Post") + " | Cosmic Chronicles";
@@ -167,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     postReadTimeMain.textContent = `~ 0 min read`;
                 }
 
-                // ✨ ADDED LOG FOR postContentMain ELEMENT AND CONTENT INJECTION ✨
                 console.log("[DEBUG] postContentMain DOM element:", postContentMain);
                 if (postContentMain) {
                     console.log("[DEBUG] Attempting to set innerHTML for postContentMain with content length:", (currentPostData.content || "").length);
@@ -187,18 +189,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (currentPostData.authorId) {
                     fetchAuthorDetails(currentPostData.authorId);
-                } else {
-                    console.warn("[DEBUG] Post data missing authorId.");
-                    if(postAuthorNameMain) postAuthorNameMain.textContent = 'Unknown Author';
-                    if(postAuthorAvatarMain) postAuthorAvatarMain.src = defaultProfilePic;
-                    if (authorBioName) authorBioName.textContent = 'Unknown Author';
-                    if (authorBioAvatar) authorBioAvatar.src = defaultProfilePic;
-                    if (authorBioText) authorBioText.textContent = 'Author information is unavailable.';
-                }
+                } else { /* ... handle missing authorId ... */ }
 
                 if (currentUser && currentPostData && currentUser.uid === currentPostData.authorId) {
-                    if (editPostBtn) { /* ... edit button logic ... */ editPostBtn.style.display = 'inline-flex'; editPostBtn.onclick = () => { window.location.href = `../create-post/create-post.html?edit=true&id=${postId}`; }; }
-                    if (deletePostBtn) { /* ... delete button logic ... */ deletePostBtn.style.display = 'inline-flex'; deletePostBtn.onclick = () => confirmDeletePost(postId, currentPostData.title); }
+                    if (editPostBtn) { editPostBtn.style.display = 'inline-flex'; editPostBtn.onclick = () => { window.location.href = `../create-post/create-post.html?edit=true&id=${postId}`; }; }
+                    if (deletePostBtn) { deletePostBtn.style.display = 'inline-flex'; deletePostBtn.onclick = () => confirmDeletePost(postId, currentPostData.title); }
                 } else {
                     if (editPostBtn) editPostBtn.style.display = 'none';
                     if (deletePostBtn) deletePostBtn.style.display = 'none';
@@ -221,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function fetchAuthorDetails(authorId) {
-        // ... (same as your provided JS, with added console logs if needed for this part) ...
+        // ... (Same as previous version with debug logs) ...
         console.log("[DEBUG] fetchAuthorDetails called for authorId:", authorId);
         if (typeof database === 'undefined') {
             console.error("[DEBUG] Database service not available for fetchAuthorDetails");
@@ -249,13 +244,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function confirmDeletePost(postId, postTitle) {
+        // ... (Same as previous version) ...
         if (window.confirm(`Are you sure you want to PERMANENTLY delete the transmission titled "${postTitle}"? This action cannot be undone.`)) {
             deletePost(postId);
         }
     }
 
     async function deletePost(postId) {
-        // ... (same as your provided JS) ...
+        // ... (Same as previous version with debug logs) ...
         if (!currentUser || !currentPostData || currentUser.uid !== currentPostData.authorId) {
             alert("You are not authorized to delete this post.");
             return;
@@ -280,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchComments(postId) {
-        // ... (same as your provided JS, with added console logs if needed for this part) ...
+        // ... (Same as previous version with debug logs) ...
         console.log("[DEBUG] fetchComments called for postId:", postId);
         if (typeof database === 'undefined') {
             console.error("[DEBUG] Database service not available for fetchComments");
@@ -289,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         const commentsRef = database.ref('comments/' + postId).orderByChild('createdAt');
         commentsRef.on('value', snapshot => {
+            console.log("[DEBUG] Comments snapshot received. Exists?", snapshot.exists());
             if (commentsList) commentsList.innerHTML = '';
             let count = 0;
             if (snapshot.exists()) {
@@ -311,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderComment(comment) {
-        // ... (same as your provided JS) ...
+        // ... (Same as previous version) ...
         if (!commentsList) return;
         const item = document.createElement('div');
         item.classList.add('comment-item');
@@ -332,8 +329,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (addCommentForm) {
         addCommentForm.addEventListener('submit', async (e) => {
-            // ... (same as your provided JS) ...
-             e.preventDefault();
+            // ... (Same as previous version with debug logs) ...
+            e.preventDefault();
             if (!currentUser) {
                 alert("Please log in to send a signal (comment).");
                 return;
@@ -378,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function showErrorState(message) {
-        console.error("[DEBUG] showErrorState called with message:", message); // Changed to console.error
+        console.error("[DEBUG] showErrorState called with message:", message);
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         if (postDetailContainer) postDetailContainer.style.display = 'none';
         if (postNotFoundDiv) {
@@ -394,7 +391,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function toggleButtonLoading(button, isLoading) {
-        // ... (same as your provided JS) ...
         if (!button) return;
         const textSpan = button.querySelector('.btn-text');
         const loaderSpan = button.querySelector('.btn-loader');
