@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log("User email not verified. Redirecting to auth page.");
                 alert("Your email is not verified. Please check your inbox or sign in again to resend verification.");
                 auth.signOut(); // Sign out the user if email is not verified to force re-login/verification
-                window.location.href = '../auth/auth.html'; // Adjust path if needed
+                window.location.href = '../auth/'; // Adjust path if needed
             }
         } else {
             console.log("No user logged in. Redirecting to auth page.");
-            window.location.href = '../auth/auth.html'; // Adjust path if needed
+            window.location.href = '../auth/'; // Adjust path if needed
         }
     });
 
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         signOutBtnNav.addEventListener('click', () => {
             auth.signOut().then(() => {
                 console.log('User signed out.');
-                window.location.href = '../auth/auth.html'; // Redirect to auth page after sign out
+                window.location.href = '../auth/'; // Redirect to auth page after sign out
             }).catch(error => {
                 console.error('Sign out error:', error);
                 alert('Error signing out. Please try again.');
