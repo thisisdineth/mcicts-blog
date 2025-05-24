@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }).catch(error => {
                 console.error("Error fetching user profile for navbar:", error);
-                userProfilePictureNav.src = defaultProfilePic;
-                userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user ? (user.displayName || 'User') : 'Guest'}`;
+                if (userProfilePictureNav) userProfilePictureNav.src = defaultProfilePic; // Check if element exists
+                if (userNameNav) userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user ? (user.displayName || 'User') : 'Guest'}`; // Check
             });
         } else if (userProfilePictureNav && userNameNav) { // No user logged in
             userProfilePictureNav.src = defaultProfilePic;
@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
             signOutBtnNav.addEventListener('click', () => {
                 auth.signOut().then(() => {
                     // UI updates are handled by onAuthStateChanged
-                    // window.location.reload(); // Or redirect to home/auth page
                 }).catch(error => console.error('Sign out error:', error));
             });
         }
@@ -137,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (snapshot.exists()) {
                 currentPostData = snapshot.val();
-                document.title = currentPostData.title + " | Cosmic Chronicles";
+                document.title = (currentPostData.title || "Post") + " | Cosmic Chronicles";
 
                 if (postTitleMain) postTitleMain.textContent = currentPostData.title;
                 if (postCategoryMain) postCategoryMain.textContent = currentPostData.category || 'Uncategorized';
@@ -165,9 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (currentPostData.authorId) {
                     fetchAuthorDetails(currentPostData.authorId);
                 } else {
-                    // Handle posts with no authorId if necessary
                     if(postAuthorNameMain) postAuthorNameMain.textContent = 'Unknown Author';
                     if(postAuthorAvatarMain) postAuthorAvatarMain.src = defaultProfilePic;
+                     if (authorBioName) authorBioName.textContent = 'Unknown Author';
+                    if (authorBioAvatar) authorBioAvatar.src = defaultProfilePic;
+                    if (authorBioText) authorBioText.textContent = 'Author information is unavailable.';
                 }
 
                 // Setup Edit/Delete buttons
@@ -175,7 +176,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (editPostBtn) {
                         editPostBtn.style.display = 'inline-flex';
                         editPostBtn.onclick = () => {
-                            // Implement edit functionality: redirect to create-post page with ID
                             window.location.href = `../create-post/create-post.html?edit=true&id=${postId}`;
                         };
                     }
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (deletePostBtn) deletePostBtn.style.display = 'none';
                 }
 
-                if (postDetailContainer) postDetailContainer.style.display = 'block';
+                if (postDetailContainer) postDetailContainer.style.display = 'block'; // 'article' in HTML
                 if (postNotFoundDiv) postNotFoundDiv.style.display = 'none';
 
             } else {
@@ -215,6 +215,10 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 if (postAuthorNameMain) postAuthorNameMain.textContent = 'Author Not Found';
                 if (authorBioText) authorBioText.textContent = 'Author information is unavailable.';
+                if (postAuthorAvatarMain) postAuthorAvatarMain.src = defaultProfilePic;
+                if (authorBioAvatar) authorBioAvatar.src = defaultProfilePic;
+                if (authorBioName) authorBioName.textContent = 'Author Not Found';
+
             }
         } catch (error) {
             console.error("Error fetching author details for post:", error);
@@ -237,10 +241,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
         try {
-            // Consider deleting associated images from Firebase Storage if needed (more complex)
-            // if (currentPostData.featuredImageUrl) {
-            //    const imageRef = storage.refFromURL(currentPostData.featuredImageUrl);
-            //    await imageRef.delete();
+            // Note: Deleting images from Firebase Storage associated with the post is more complex.
+            // It requires storing the full storage paths of all images (featured + TinyMCE uploads)
+            // in your database post data, then iterating through them and deleting each.
+            // For simplicity, this example only deletes the database entries.
+            // Example for featured image if you stored its path:
+            // if (currentPostData.featuredImageStoragePath && firebase.storage) { // Check if storage is available
+            //    const imageRef = firebase.storage().ref(currentPostData.featuredImageStoragePath);
+            //    await imageRef.delete().catch(err => console.warn("Could not delete featured image:", err));
             // }
 
             await database.ref('posts/' + postId).remove();
@@ -265,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (snapshot.exists()) {
                 snapshot.forEach(childSnapshot => {
                     const comment = childSnapshot.val();
-                    if (comment) { // Ensure comment data is not null
+                    if (comment) { 
                         renderComment(comment);
                         count++;
                     }
@@ -331,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
 
                 await database.ref('comments/' + currentPostId).push(newComment);
-                commentTextInput.value = ''; // Clear textarea
+                commentTextInput.value = ''; 
             } catch (error) {
                 console.error("Error adding comment:", error);
                 alert("Failed to send signal: " + error.message);
@@ -356,6 +364,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const pTag = postNotFoundDiv.querySelector('p');
             if (pTag) {
                 pTag.innerHTML = `${escapeHTML(message)} Try returning to the <a href="../blog/blog.html">HoloNet Archives</a>.`;
+            } else {
+                postNotFoundDiv.innerHTML = `<h1><i class="fas fa-ghost"></i> Error</h1><p>${escapeHTML(message)} Try returning to the <a href="../blog/blog.html">HoloNet Archives</a>.</p>`;
             }
         }
         document.title = "Transmission Lost | Cosmic Chronicles";
