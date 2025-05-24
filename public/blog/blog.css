@@ -1,0 +1,637 @@
+/* blog/blog.css */
+
+/* Import Fonts (if not already imported globally in HTML or another CSS) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap');
+
+:root {
+    /* Space & Gen Z Theme Colors from auth.css */
+    --bg-dark-space: #0F052B;
+    --bg-darker-space: #0A021F;
+    --glassmorphism-bg: rgba(25, 15, 50, 0.65);
+    --glassmorphism-bg-navbar: rgba(15, 5, 40, 0.75);
+    --glassmorphism-border: rgba(120, 80, 200, 0.4);
+    --primary-neon: #00F0FF;
+    --primary-neon-rgb: 0, 240, 255; /* R, G, B values of #00F0FF for rgba() */
+    --primary-neon-hover: #60F8FF;
+    --secondary-neon: #F000FF;
+    --secondary-neon-hover: #FF60FF; /* Lighter magenta for hover */
+    --accent-glow: rgba(0, 240, 255, 0.5);
+    --accent-glow-secondary: rgba(240, 0, 255, 0.4);
+
+    --text-light: #E0E0FF;
+    --text-medium: #A0A0C0;
+    --text-heading: #FFFFFF;
+    --text-link: var(--primary-neon);
+    --text-link-hover: var(--primary-neon-hover);
+
+    --success-color: #00FF7F; /* Neon Green */
+    --error-color: #FF4D4D; /* Neon Red */
+
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-border: rgba(120, 80, 200, 0.3);
+    --input-focus-border: var(--primary-neon);
+    --input-placeholder: #707090;
+
+    --font-primary: 'Poppins', sans-serif;
+    --font-headings: 'Orbitron', sans-serif;
+
+    --border-radius-main: 12px;
+    --border-radius-small: 8px;
+    --box-shadow-glow: 0 0 15px var(--accent-glow);
+    --box-shadow-glow-secondary: 0 0 10px var(--accent-glow-secondary);
+}
+
+/* General Body Styles */
+body {
+    font-family: var(--font-primary);
+    background-color: var(--bg-darker-space);
+    color: var(--text-light);
+    margin: 0;
+    padding: 0;
+    line-height: 1.7;
+    overflow-x: hidden;
+    position: relative; /* For stars-bg positioning */
+    padding-top: 80px; /* Space for fixed navbar - adjust if navbar height changes */
+}
+
+.stars-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background-image:
+        radial-gradient(1px 1px at 20px 30px, #fff, rgba(255,255,255,0)),
+        radial-gradient(1px 1px at 40px 70px, #fff, rgba(255,255,255,0)),
+        radial-gradient(1px 1px at 50px 160px, #ddd, rgba(255,255,255,0)),
+        radial-gradient(2px 2px at 90px 40px, #fff, rgba(255,255,255,0)),
+        radial-gradient(2px 2px at 130px 80px, #fff, rgba(255,255,255,0)),
+        radial-gradient(2px 2px at 160px 120px, #ddd, rgba(255,255,255,0));
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    animation: twinkle 20s linear infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { background-position: 0 0; opacity: 0.6; }
+    100% { background-position: -250px -150px; opacity: 0.9; }
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: var(--glassmorphism-bg-navbar);
+    border-bottom: 1px solid var(--glassmorphism-border);
+    padding: 10px 2.5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.2), var(--box-shadow-glow-secondary);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.navbar-brand a {
+    font-family: var(--font-headings);
+    color: var(--primary-neon);
+    text-decoration: none;
+    font-size: 1.8em;
+    font-weight: 700;
+    text-shadow: 0 0 8px var(--primary-neon);
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+.navbar-brand a:hover {
+    color: var(--primary-neon-hover);
+    text-shadow: 0 0 12px var(--primary-neon-hover);
+}
+
+/* Generic Button Styles (reused from auth.css concept) */
+.btn {
+    padding: 10px 18px;
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-small);
+    font-size: 0.9em;
+    font-family: var(--font-headings);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-transform: uppercase;
+}
+.btn:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+}
+.btn-primary {
+    background-color: var(--primary-neon);
+    color: var(--bg-dark-space);
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--primary-neon-hover);
+    color: var(--bg-darker-space);
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 3px #fff;
+}
+
+/* Specific Navbar Action Button */
+.navbar-actions #create-post-btn {
+    /* Applied via .btn and .btn-primary classes in HTML */
+}
+
+/* Navbar User Profile */
+.navbar-user {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#user-profile-picture-nav {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid var(--primary-neon);
+    box-shadow: 0 0 10px var(--accent-glow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#user-profile-picture-nav:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px var(--primary-neon), 0 0 5px var(--primary-neon-hover);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: var(--glassmorphism-bg);
+    border: 1px solid var(--glassmorphism-border);
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3), var(--box-shadow-glow-secondary);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1010;
+    width: 220px;
+    padding: 8px 0;
+    overflow: hidden;
+}
+.dropdown-menu.show {
+    display: block;
+    animation: fadeInDownDropdown 0.3s ease-out forwards;
+}
+@keyframes fadeInDownDropdown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--text-light);
+    font-size: 0.95em;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+}
+.dropdown-menu a i,
+.dropdown-menu button i {
+    color: var(--primary-neon);
+    width: 18px;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+.dropdown-menu #user-name-nav {
+    font-weight: bold;
+    color: var(--text-heading);
+    font-family: var(--font-headings);
+    font-size: 1em;
+    pointer-events: none;
+    padding-bottom: 8px;
+}
+.dropdown-menu #user-name-nav i { /* Ensure user-astronaut icon shows */
+    color: var(--primary-neon); /* If it wasn't showing before */
+}
+.dropdown-menu hr {
+    margin: 8px 15px;
+    border: 0;
+    border-top: 1px solid var(--glassmorphism-border);
+}
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background-color: rgba(var(--primary-neon-rgb), 0.1);
+    color: var(--primary-neon-hover);
+    padding-left: 25px;
+}
+.dropdown-menu a:hover i,
+.dropdown-menu button:hover i {
+    transform: scale(1.1);
+}
+
+/* Page Layout with Sidebar */
+.page-layout {
+    display: flex;
+    flex-wrap: wrap;
+    width: 95%;
+    max-width: 1400px;
+    margin: 30px auto;
+    gap: 30px;
+}
+
+.main-content {
+    flex: 3;
+    min-width: 300px;
+    background-color: var(--glassmorphism-bg);
+    padding: 25px 30px;
+    border-radius: var(--border-radius-main);
+    border: 1px solid var(--glassmorphism-border);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), var(--box-shadow-glow-secondary);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.sidebar {
+    flex: 1;
+    min-width: 280px;
+}
+
+/* Sidebar Widget Styles */
+.sidebar-widget {
+    background-color: var(--glassmorphism-bg);
+    padding: 20px 25px;
+    border-radius: var(--border-radius-small);
+    border: 1px solid var(--glassmorphism-border);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2), var(--box-shadow-glow-secondary);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    margin-bottom: 25px;
+}
+.sidebar-widget h3 {
+    font-family: var(--font-headings);
+    color: var(--secondary-neon);
+    font-size: 1.4em;
+    margin-top: 0;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--glassmorphism-border);
+    text-shadow: 0 0 6px var(--accent-glow-secondary);
+    display: flex;
+    align-items: center;
+}
+.sidebar-widget h3 i {
+    margin-right: 10px;
+    font-size: 0.9em; /* Relative to h3 font-size */
+    opacity: 0.8;
+}
+
+/* Search Widget */
+.search-widget .search-bar-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--input-bg);
+    border-radius: var(--border-radius-small);
+    border: 1px solid var(--input-border);
+    padding-left: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.search-widget .search-bar-container:focus-within {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 10px var(--input-focus-border), 0 0 15px var(--accent-glow);
+}
+.search-widget input[type="search"] {
+    flex-grow: 1;
+    /* width: 100%; */ /* Not needed with flex-grow */
+    padding: 12px 10px;
+    background-color: transparent;
+    border: none;
+    /* border-radius: var(--border-radius-small); */ /* Handled by container */
+    font-size: 0.95em;
+    color: var(--text-light);
+}
+.search-widget input[type="search"]::placeholder {
+    color: var(--input-placeholder);
+    opacity: 0.7;
+}
+.search-widget input[type="search"]:focus {
+    outline: none;
+}
+.search-widget .btn-search-icon {
+    background-color: var(--primary-neon);
+    color: var(--bg-dark-space);
+    border: none;
+    padding: 12px 15px;
+    border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+.search-widget .btn-search-icon:hover {
+    background-color: var(--primary-neon-hover);
+}
+
+/* Trending Posts & Categories Widget Lists */
+.sidebar-widget ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sidebar-widget ul li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 20px;
+}
+.sidebar-widget ul li::before {
+    content: "\f111"; /* fa-circle, or use other like \f105 for fa-chevron-right */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; /* For solid icons, 400 for regular */
+    font-size: 0.6em;
+    color: var(--primary-neon);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%); /* Better vertical alignment */
+    text-shadow: 0 0 5px var(--accent-glow);
+}
+.sidebar-widget ul li a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+.sidebar-widget ul li a:hover {
+    color: var(--primary-neon-hover);
+    text-shadow: 0 0 8px var(--primary-neon);
+}
+.sidebar-widget .post-flair {
+    background-color: var(--secondary-neon);
+    color: var(--bg-dark-space);
+    font-size: 0.7em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.sidebar-widget .category-count {
+    font-size: 0.85em;
+    color: var(--text-medium);
+    margin-left: 5px;
+}
+/* About Widget */
+.about-widget p {
+    font-size: 0.9em;
+    color: var(--text-medium);
+    line-height: 1.6;
+}
+
+/* Main Content Area Heading & Loading */
+.main-content h1 { /* Renamed from just h1 to be specific to main content if needed */
+    font-family: var(--font-headings);
+    color: var(--primary-neon);
+    text-align: center;
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px var(--primary-neon), 0 0 15px var(--accent-glow);
+    letter-spacing: 1px;
+    display: flex; /* For icon alignment */
+    align-items: center;
+    justify-content: center;
+}
+.main-content h1 i {
+    margin-right: 15px;
+    font-size: 0.8em; /* Relative to h1 */
+}
+
+#loading-indicator {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 1.5em;
+    color: var(--primary-neon);
+    font-family: var(--font-headings);
+    display: block; /* Or 'flex' if you want to align icon better; JS handles actual visibility */
+    align-items: center;
+    justify-content: center;
+}
+#loading-indicator i {
+    margin-left: 10px;
+    text-shadow: 0 0 8px var(--primary-neon);
+}
+
+/* Blog Posts Container & Individual Post Styling */
+#blog-posts-container {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.blog-post {
+    background-color: var(--glassmorphism-bg);
+    border: 1px solid var(--glassmorphism-border);
+    padding: 20px 25px;
+    border-radius: var(--border-radius-main);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2), var(--box-shadow-glow-secondary);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+.blog-post:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3), var(--box-shadow-glow);
+}
+.blog-post h2 {
+    margin-top: 0;
+    font-family: var(--font-headings);
+    color: var(--primary-neon);
+    font-size: 1.6em;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 5px var(--accent-glow);
+}
+.blog-post .post-meta {
+    font-size: 0.85em;
+    color: var(--text-medium);
+    margin-bottom: 15px;
+    border-bottom: 1px dashed var(--glassmorphism-border);
+    padding-bottom: 10px;
+}
+.blog-post .post-meta i { /* Example if you add icons to post meta */
+    margin-right: 5px;
+    color: var(--secondary-neon);
+}
+.blog-post .post-content {
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: var(--text-light);
+    flex-grow: 1;
+}
+.blog-post a.read-more-btn {
+    display: inline-block;
+    background: linear-gradient(45deg, var(--primary-neon), var(--secondary-neon));
+    color: var(--bg-dark-space);
+    font-family: var(--font-headings);
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: var(--border-radius-small);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-align: center;
+    margin-top: auto;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+.blog-post a.read-more-btn:hover {
+    background: linear-gradient(45deg, var(--primary-neon-hover), var(--secondary-neon-hover));
+    color: var(--bg-darker-space);
+    box-shadow: 0 0 18px var(--accent-glow), 0 0 25px var(--accent-glow-secondary);
+    transform: scale(1.05);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 25px 20px;
+    background-color: var(--bg-dark-space);
+    color: var(--text-medium);
+    margin-top: 40px;
+    border-top: 1px solid var(--glassmorphism-border);
+    font-size: 0.9em;
+}
+footer p a {
+    color: var(--primary-neon);
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+footer p a:hover {
+    color: var(--primary-neon-hover);
+    text-shadow: 0 0 5px var(--primary-neon);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+    .page-layout {
+        flex-direction: column;
+        gap: 25px;
+    }
+    .main-content, .sidebar {
+        flex-basis: 100%; /* Full width when stacked */
+    }
+    #blog-posts-container { /* Single column for posts on tablet */
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px; /* Adjust if navbar height changes */
+    }
+    .navbar {
+        padding: 8px 5%;
+    }
+    .navbar-brand a {
+        font-size: 1.5em;
+    }
+    .navbar-actions #create-post-btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+    #user-profile-picture-nav {
+        width: 40px;
+        height: 40px;
+    }
+    .dropdown-menu {
+        top: 55px;
+    }
+    .main-content h1 {
+        font-size: 2.2em;
+    }
+    .blog-post h2 {
+        font-size: 1.4em;
+    }
+    .page-layout {
+        width: auto; /* Remove fixed percentage, use padding for spacing */
+        padding-left: 15px;
+        padding-right: 15px;
+        margin: 20px 0; /* Let it flow naturally */
+    }
+    .main-content, .sidebar-widget {
+        padding: 20px;
+    }
+    .sidebar-widget h3 {
+        font-size: 1.3em;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-top: 110px; /* Increased padding due to navbar wrapping */
+    }
+    .navbar {
+        flex-wrap: wrap;
+        justify-content: space-between; /* Better than center for two rows */
+        padding-bottom: 10px; /* Add some padding if it wraps */
+    }
+    .navbar-brand {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .navbar-actions {
+        order: 2;
+        /* margin-right: auto; */ /* Removed to allow space-between on parent */
+    }
+    .navbar-user {
+        order: 1;
+        /* margin-left: auto; */ /* Removed */
+    }
+    .page-layout {
+        gap: 20px;
+        margin: 15px 0;
+    }
+    .main-content, .sidebar-widget {
+        padding: 15px;
+        border-radius: var(--border-radius-small);
+    }
+    .main-content h1 {
+        font-size: 1.8em;
+    }
+     .main-content h1 i {
+        font-size: 0.7em;
+        margin-right: 10px;
+    }
+    .blog-post h2 {
+        font-size: 1.3em;
+    }
+    .blog-post a.read-more-btn {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+    .sidebar-widget h3 {
+        font-size: 1.2em;
+    }
+    .search-widget input[type="search"], .search-widget .btn-search-icon {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}

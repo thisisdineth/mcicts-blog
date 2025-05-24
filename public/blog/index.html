@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Cosmic Blog</title>
+    <link rel="stylesheet" href="blog.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="stars-bg"></div>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="blog.html">Cosmic Chronicles</a>
+        </div>
+        <div class="navbar-actions">
+           
+            <button id="create-post-btn" class="btn btn-primary">Create New Post</button>
+        </div>
+        <div class="navbar-user">
+            <img id="user-profile-picture-nav" src="../images/default-avatar.png" alt="Profile">
+            <div class="dropdown-menu" id="profile-dropdown">
+                <a href="#" id="user-name-nav"><i class="fas fa-user-astronaut"></i> Your Name</a>
+                <hr>
+                <a href="../settings/settings.html">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <button id="sign-out-btn-nav">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-layout"> 
+        <main class="main-content">
+            <h1><i class="fas fa-nova"></i> Latest Transmissions</h1> 
+            <div id="loading-indicator">Loading transmissions... <i class="fas fa-satellite-dish fa-spin"></i></div>
+            <div id="blog-posts-container">
+                {/* Blog posts will be loaded here by JavaScript */}
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="sidebar-widget search-widget">
+                <h3><i class="fas fa-search-location"></i> Galactic Search</h3>
+                <div class="search-bar-container">
+                    <input type="search" id="blog-search-input" placeholder="Scan articles...">
+                    <button id="blog-search-button" class="btn-search-icon" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-widget trending-posts-widget">
+                <h3><i class="fas fa-meteor"></i> Hot Signals (Trending)</h3>
+                <ul id="trending-posts-list">
+                    <li><a href="#">Decoding Alien Syntax <span class="post-flair">NEW</span></a></li>
+                    <li><a href="#">Top 5 Nebulas for Stargazing</a></li>
+                    <li><a href="#">Warp Drive Maintenance 101</a></li>
+                    <li><a href="#">The Kuiper Anomaly</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-widget categories-widget">
+                <h3><i class="fas fa-tags"></i> Sector Tags (Categories)</h3>
+                <ul id="categories-list">
+                   
+                    <li><a href="#">Astro-Physics <span class="category-count">(12)</span></a></li>
+                    <li><a href="#">Xeno-Biology <span class="category-count">(7)</span></a></li>
+                    <li><a href="#">Starship Engineering <span class="category-count">(21)</span></a></li>
+                    <li><a href="#">Exploration Logs <span class="category-count">(33)</span></a></li>
+                    <li><a href="#">Colony Reports <span class="category-count">(5)</span></a></li>
+                </ul>
+            </div>
+
+             <div class="sidebar-widget about-widget">
+                <h3><i class="fas fa-info-circle"></i> HoloNet Archives</h3>
+                <p>Welcome to the Cosmic Chronicles, your primary source for intergalactic news, research, and expedition logs from across the known universe.</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>&copy; 2342 Cosmic Chronicles Network. All stellar rights reserved.</p>
+        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="../firebase-config.js"></script>
+    <script src="blog.js"></script>
+</body>
+</html>
