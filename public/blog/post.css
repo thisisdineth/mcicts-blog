@@ -1,0 +1,286 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background-color: #0A021F; /* Deep space blue/purple */
+    color: #E0E0FF; /* Light lavender for text */
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #100A2F; /* Slightly lighter than body */
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(76, 0, 255, 0.3); /* Nebula glow */
+}
+
+a {
+    color: #8A2BE2; /* Cosmic purple for links */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #A040FF;
+    text-decoration: underline;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #1A0F3B; /* Darker shade for navbar */
+    padding: 10px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2A1F4B;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.navbar-brand a {
+    color: #E0E0FF;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.navbar-brand i {
+    margin-right: 8px;
+    color: #8A2BE2; /* Accent color for icon */
+}
+
+.navbar-user-info {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+#user-name-nav {
+    margin-right: 15px;
+    color: #C0C0FF;
+    font-size: 0.9em;
+}
+#user-name-nav i {
+    margin-right: 5px;
+}
+
+.profile-pic-nav {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #8A2BE2;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px; /* Adjust as needed */
+    right: 0;
+    background-color: #1A0F3B;
+    border: 1px solid #2A1F4B;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 1000;
+    width: 180px;
+    overflow: hidden;
+}
+
+.profile-dropdown.show {
+    display: block;
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 12px 15px;
+    color: #E0E0FF;
+    font-size: 0.9em;
+}
+
+.profile-dropdown a:hover {
+    background-color: #2A1F4B;
+    text-decoration: none;
+}
+
+.profile-dropdown a i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+}
+
+
+/* Post Specific Styles */
+.post {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #180C3D; /* Slightly different shade for post area */
+}
+
+.post-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #2A1F4B;
+    padding-bottom: 20px;
+}
+
+.post-title-main {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.post-meta {
+    font-size: 0.9em;
+    color: #A0A0CF; /* Lighter purple for meta */
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.author-avatar-small {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 1px solid #8A2BE2;
+}
+
+.post-meta span {
+    margin-right: 10px;
+}
+
+.featured-image-display {
+    width: 100%;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border: 3px solid #2A1F4B;
+}
+
+.post-content {
+    font-size: 1.1em;
+    line-height: 1.7;
+}
+
+/* Styles for content that might come from TinyMCE */
+.post-content h1, .post-content h2, .post-content h3, .post-content h4 {
+    color: #F0F0FF;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+.post-content p {
+    margin-bottom: 1em;
+}
+.post-content strong {
+    color: #CFCFFF;
+}
+.post-content em {
+    color: #BABAFF;
+}
+.post-content a {
+    color: #9F50FF; /* Slightly different link color for content */
+    font-weight: bold;
+}
+.post-content a:hover {
+    color: #B070FF;
+}
+.post-content ul, .post-content ol {
+    margin-left: 20px;
+    margin-bottom: 1em;
+}
+.post-content blockquote {
+    border-left: 4px solid #8A2BE2;
+    margin-left: 0;
+    padding-left: 15px;
+    font-style: italic;
+    color: #B0B0DF;
+}
+.post-content pre, .post-content code {
+    background-color: #05010D;
+    border: 1px solid #2A1F4B;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95em;
+    color: #D0D0F0;
+}
+.post-content pre {
+    padding: 10px;
+    overflow-x: auto;
+}
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: block; /* To center with margin auto if needed */
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Loading and Message Styles */
+.loading-indicator {
+    text-align: center;
+    padding: 30px;
+    font-size: 1.2em;
+    color: #A0A0CF;
+}
+.loading-indicator i {
+    margin-right: 10px;
+}
+
+.message-area {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+.message-area.error {
+    background-color: #5c0e0e;
+    color: #ffc0c0;
+    border: 1px solid #8c1717;
+}
+.message-area.success {
+    background-color: #0e5c1c;
+    color: #c0ffc8;
+    border: 1px solid #178c2a;
+}
+.message-area i {
+    margin-right: 8px;
+}
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    font-size: 0.9em;
+    color: #A0A0CF;
+    border-top: 1px solid #2A1F4B;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+    .post-title-main {
+        font-size: 2em;
+    }
+    .post-content {
+        font-size: 1em;
+    }
+    .navbar {
+        padding: 10px 15px;
+    }
+    .navbar-brand a {
+        font-size: 1.3em;
+    }
+    #user-name-nav {
+        display: none; /* Hide name on smaller screens for space */
+    }
+}

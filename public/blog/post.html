@@ -3,126 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Transmission Details</title> 
-    <link rel="stylesheet" href="post.css">
+    <title>Post Title | Cosmic Chronicles</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <div class="stars-bg"></div>
-
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <a href="../blog/blog.html"><i class="fas fa-journal-whills"></i> Cosmic Chronicles</a>
-        </div>
-        <div class="navbar-actions">
-            <a href="../blog/blog.html" class="btn btn-secondary">
-                <i class="fas fa-chevron-left"></i> Back to HoloNet
-            </a>
-             <a href="../create-post/create-post.html" id="nav-create-post-btn" class="btn btn-primary" style="display: none;">
-                <i class="fas fa-plus-circle"></i> New Transmission
-            </a>
-        </div>
-        <div class="navbar-user">
-            <img id="user-profile-picture-nav" src="../images/default-avatar.png" alt="Profile">
-            <div class="dropdown-menu" id="profile-dropdown">
-                <a href="#" id="user-name-nav"><i class="fas fa-user-astronaut"></i> Your Name</a>
-                <hr>
-                <a href="../settings/settings.html">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-                <button id="sign-out-btn-nav">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <div id="loading-overlay">
-        <div class="spinner">
-            <i class="fas fa-satellite-dish fa-spin"></i>
-            <p>Receiving Transmission...</p>
-        </div>
-    </div>
-
-    <div id="post-not-found" style="display:none;">
-        <h1><i class="fas fa-ghost"></i> Transmission Lost</h1>
-        <p>Signal corrupted or this cosmic anomaly does not exist. Try returning to the <a href="../blog/blog.html">HoloNet Archives</a>.</p>
-    </div>
-
-    <article class="post-detail-container" style="display:none;">
-        <header class="post-header-section">
-            <div id="featured-image-container" class="featured-image-banner">
-                {/* Featured image will be set as background here by JS */}
-                <div class="title-overlay">
-                    <h1 id="post-title-main">Post Title Loading...</h1>
-                    <div class="post-meta-main">
-                        <span id="post-category-main" class="category-tag">Category</span>
-                        <span><i class="fas fa-calendar-alt"></i> <span id="post-date-main">Date</span></span>
-                        <span><i class="fas fa-clock"></i> <span id="post-read-time-main">~ min read</span></span>
-                    </div>
-                </div>
-            </div>
-            <div class="author-info-banner">
-                <img id="post-author-avatar-main" src="../images/default-avatar.png" alt="Author Avatar">
-                <span>By <strong id="post-author-name-main">Author Loading...</strong></span>
-            </div>
-        </header>
-
-        <section class="post-content-section">
-            <div id="post-content-main" class="post-content-typography">
-                {/* Dynamic post content loads here */}
-            </div>
-        </section>
-
-        <section class="post-author-bio-section">
-            <div class="author-bio-card">
-                <img id="author-bio-avatar" src="../images/default-avatar.png" alt="Author Avatar">
-                <div class="author-bio-details">
-                    <h3>About <span id="author-bio-name">Author Name</span></h3>
-                    <p id="author-bio-text">Loading author information... A seasoned explorer of the final frontier, charting courses through uncharted nebulas and cataloging celestial wonders.</p>
-                </div>
-            </div>
-        </section>
-        
-        <section class="post-actions-section">
-            <button id="edit-post-btn" class="btn btn-secondary" style="display:none;"><i class="fas fa-edit"></i> Edit Transmission</button>
-            <button id="delete-post-btn" class="btn btn-danger" style="display:none;"><i class="fas fa-trash-alt"></i> Delete Transmission</button>
-        </section>
-
-
-        <section id="comments-section" class="comments-section">
-            <h2><i class="fas fa-comments"></i> HoloNet Discussion ( <span id="comment-count">0</span> )</h2>
-            <div id="comments-list">
-                {/* Comments will be loaded here by JS */}
-            </div>
-
-            <div id="add-comment-form-container">
-                <h3>Leave a Resonance Signal (Comment)</h3>
-                <form id="add-comment-form">
-                    <textarea id="comment-text" placeholder="Join the discussion, Cadet..." required></textarea>
-                    <button type="submit" id="submit-comment-btn" class="btn btn-primary">
-                        <span class="btn-text"><i class="fas fa-paper-plane"></i> Send Signal</span>
-                        <span class="btn-loader" style="display: none;"></span>
-                    </button>
-                </form>
-            </div>
-            <div id="comment-login-prompt" style="display: none;">
-                <p><a href="../auth/auth.html">Log in</a> or <a href="../auth/auth.html#signup">register</a> to join the HoloNet discussion.</p>
-            </div>
-        </section>
-    </article>
-
-    <footer>
-        <p>&copy; 2342 Cosmic Chronicles Network. All stellar rights reserved.</p>
-    </footer>
-
-    {/* Correct Firebase SDK Script Order */}
+    <link href="https="fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="post.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="../firebase-config.js"></script> </head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="../index.html"><i class="fas fa-meteor"></i> Cosmic Chronicles</a>
+        </div>
+        <div class="navbar-user-info">
+            <span id="user-name-nav"><i class="fas fa-user-astronaut"></i> Guest</span>
+            <img src="../images/default-avatar.png" alt="User Profile" id="user-profile-picture-nav" class="profile-pic-nav">
+            <div class="profile-dropdown" id="profile-dropdown">
+                <a href="../profile/profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+                <a href="../dashboard/dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="#" id="sign-out-btn-nav"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                <a href="../auth/auth.html" id="sign-in-btn-nav" style="display:none;"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+            </div>
+        </div>
+    </nav>
 
-    <script src="../firebase-config.js"></script> 
+    <div class="container">
+        <main id="post-container">
+            <article class="post">
+                <header class="post-header">
+                    <h1 id="post-title-display" class="post-title-main">Loading Post...</h1>
+                    <div class="post-meta">
+                        <img id="post-author-img" src="../images/default-avatar.png" alt="Author" class="author-avatar-small">
+                        <span id="post-author-name">By Anonymous Explorer</span> |
+                        <span id="post-date">Fetching date...</span> |
+                        Category: <span id="post-category-display">Uncategorized</span>
+                    </div>
+                </header>
+
+                <img id="post-featured-image-display" src="#" alt="Featured Image" class="featured-image-display" style="display:none;">
+
+                <div id="post-content-display" class="post-content">
+                    <p>Loading content...</p>
+                </div>
+            </article>
+
+            <div id="loading-indicator" class="loading-indicator">
+                <i class="fas fa-spinner fa-spin"></i> Loading Post Data...
+            </div>
+            <div id="error-message-area" class="message-area" style="display:none;"></div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Cosmic Chronicles. All rights reserved.</p>
+    </footer>
+
     <script src="post.js"></script>
 </body>
 </html>
