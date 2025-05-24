@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const userNameNav = document.getElementById('user-name-nav');
     const signOutBtnNav = document.getElementById('sign-out-btn-nav');
     const navCreatePostBtn = document.getElementById('nav-create-post-btn');
-    const defaultProfilePic = '../images/default-avatar.png';
+    const defaultProfilePic = 'https://img.freepik.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?semt=ais_hybrid&w=740';
     const postTitleMain = document.getElementById('post-title-main');
     const postCategoryMain = document.getElementById('post-category-main');
     const postDateMain = document.getElementById('post-date-main');
