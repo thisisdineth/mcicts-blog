@@ -203,7 +203,7 @@ const firebaseConfig = {
 
             if (user.emailVerified) {
                 showMessage('Access granted! Preparing for warp...', 'success');
-                setTimeout(() => window.location.href = '../app/', 2000);
+                setTimeout(() => window.location.href = '../blog/', 2000);
             } else {
                 await auth.signOut();
                 showMessage('Comms link not verified. Please confirm your email signal. Resending verification.', 'error', 10000);
@@ -240,7 +240,7 @@ const firebaseConfig = {
 
                 if (snapshot.exists() && snapshot.val().class && snapshot.val().age) {
                     showMessage('Google Hyperspace link established! Redirecting...', 'success');
-                     setTimeout(() => window.location.href = '../app/', 2000);
+                     setTimeout(() => window.location.href = '../blog/', 2000);
                 } else {
                     tempGoogleUser = user;
                     googleSignupClassInput.value = snapshot.val()?.class || '';
@@ -317,7 +317,7 @@ const firebaseConfig = {
             googleExtraForm.reset();
             tempGoogleUser = null;
             showMessage('Galactic ID updated! Preparing for launch...', 'success');
-            setTimeout(() => window.location.href = '../app/', 2000);
+            setTimeout(() => window.location.href = '../blog/', 2000);
 
         } catch (error) {
             console.error("Error saving Google user extra info:", error);
