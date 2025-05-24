@@ -3,16 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post Title | Cosmic Chronicles</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https="fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Loading Post... | Cosmic Chronicles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="post.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="../firebase-config.js"></script> </head>
 <body>
+    <div id="page-loader" class="page-loader-active">
+        <div class="cosmic-spinner">
+            <div class="planet"></div>
+            <div class="orbit"></div>
+            <div class="orbit"></div>
+            <div class="orbit"></div>
+        </div>
+        <p>Summoning Holo-Post...</p>
+    </div>
+
     <nav class="navbar">
         <div class="navbar-brand">
             <a href="../index.html"><i class="fas fa-meteor"></i> Cosmic Chronicles</a>
@@ -21,43 +30,76 @@
             <span id="user-name-nav"><i class="fas fa-user-astronaut"></i> Guest</span>
             <img src="../images/default-avatar.png" alt="User Profile" id="user-profile-picture-nav" class="profile-pic-nav">
             <div class="profile-dropdown" id="profile-dropdown">
-                <a href="../profile/profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
-                <a href="../dashboard/dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="../profile/profile.html" id="profile-link-nav"><i class="fas fa-user-circle"></i> My Profile</a>
+                <a href="../dashboard/dashboard.html" id="dashboard-link-nav"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                 <a href="#" id="sign-out-btn-nav"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
                 <a href="../auth/auth.html" id="sign-in-btn-nav" style="display:none;"><i class="fas fa-sign-in-alt"></i> Sign In</a>
             </div>
         </div>
     </nav>
 
+    <header id="post-hero" class="post-hero-section">
+        <div class="hero-image-container">
+            </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 id="post-title-display-hero" class="post-title-hero">Loading Title...</h1>
+        </div>
+    </header>
+
     <div class="container">
-        <main id="post-container">
+        <main id="post-main-content" style="display:none;">
             <article class="post">
-                <header class="post-header">
-                    <h1 id="post-title-display" class="post-title-main">Loading Post...</h1>
-                    <div class="post-meta">
+                <div class="post-meta-container">
+                    <div class="post-meta-upper">
                         <img id="post-author-img" src="../images/default-avatar.png" alt="Author" class="author-avatar-small">
-                        <span id="post-author-name">By Anonymous Explorer</span> |
+                        <span id="post-author-name">By Anonymous Explorer</span>
+                    </div>
+                    <div class="post-meta-lower">
                         <span id="post-date">Fetching date...</span> |
                         Category: <span id="post-category-display">Uncategorized</span>
                     </div>
-                </header>
-
-                <img id="post-featured-image-display" src="#" alt="Featured Image" class="featured-image-display" style="display:none;">
+                </div>
 
                 <div id="post-content-display" class="post-content">
                     <p>Loading content...</p>
                 </div>
+
+                <div class="post-actions">
+                    <button id="like-button" class="action-button">
+                        <i class="far fa-heart"></i> <span id="like-count">0</span> Likes
+                    </button>
+                    <a href="#comments-section" id="comment-button-link" class="action-button">
+                        <i class="far fa-comment-dots"></i> Comments
+                    </a>
+                    <button id="share-button" class="action-button">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                </div>
+                 <div id="share-tooltip" class="share-tooltip">Link copied to clipboard!</div>
             </article>
 
-            <div id="loading-indicator" class="loading-indicator">
-                <i class="fas fa-spinner fa-spin"></i> Loading Post Data...
-            </div>
-            <div id="error-message-area" class="message-area" style="display:none;"></div>
+            <section id="comments-section" class="comments-area">
+                <h2><i class="fas fa-comments"></i> Galactic Discussions</h2>
+                <div id="comment-login-prompt" style="display:none;" class="login-prompt">
+                    <p><i class="fas fa-info-circle"></i> Please <a href="../auth/auth.html">log in</a> to join the conversation or leave your mark!</p>
+                </div>
+                <div id="comments-list">
+                    <p>Be the first to comment!</p>
+                </div>
+                <div id="comment-form-placeholder" style="display:none;">
+                     <h4>Leave a Comment</h4>
+                     <textarea placeholder="Type your comment here..." disabled style="width:100%; min-height:80px;"></textarea>
+                     <button disabled>Submit Comment (Login Required)</button>
+                </div>
+            </section>
+
         </main>
+        <div id="error-message-area" class="message-area" style="display:none;"></div>
     </div>
 
     <footer>
-        <p>&copy; 2025 Cosmic Chronicles. All rights reserved.</p>
+        <p>&copy; <span id="current-year"></span> Cosmic Chronicles. All rights reserved.</p>
     </footer>
 
     <script src="post.js"></script>

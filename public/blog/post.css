@@ -6,281 +6,377 @@ body {
     color: #E0E0FF; /* Light lavender for text */
     line-height: 1.6;
     font-size: 16px;
+    transition: opacity 0.5s ease-in-out;
 }
+
+/* Page Loader Styles */
+.page-loader-active {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0A021F;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.page-loader-active p {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #A0A0CF;
+}
+.cosmic-spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+.cosmic-spinner .planet {
+    width: 30px;
+    height: 30px;
+    background-color: #8A2BE2; /* Cosmic purple */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px #8A2BE2;
+}
+.cosmic-spinner .orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 2px solid rgba(138, 43, 226, 0.3); /* Light purple orbit */
+    border-top-color: #A040FF; /* Brighter segment for spin */
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+.cosmic-spinner .orbit:nth-child(2) {
+    width: 60px;
+    height: 60px;
+    margin-left: -31px; /* width/2 + border */
+    margin-top: -31px; /* height/2 + border */
+    animation-duration: 1.2s;
+}
+.cosmic-spinner .orbit:nth-child(3) {
+    width: 80px;
+    height: 80px;
+    margin-left: -41px;
+    margin-top: -41px;
+    animation-duration: 1.8s;
+    animation-delay: 0.2s;
+}
+.cosmic-spinner .orbit:nth-child(4) {
+    width: 100px;
+    height: 100px;
+    margin-left: -51px;
+    margin-top: -51px;
+    animation-duration: 2.2s;
+    animation-delay: 0.4s;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 
 .container {
     max-width: 900px;
-    margin: 20px auto;
+    margin: 0 auto; /* Margin top removed as hero takes space */
     padding: 20px;
-    background-color: #100A2F; /* Slightly lighter than body */
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(76, 0, 255, 0.3); /* Nebula glow */
+    background-color: #100A2F;
+    border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+    box-shadow: 0 10px 30px rgba(46, 1, 90, 0.5); /* Enhanced nebula glow */
 }
 
 a {
-    color: #8A2BE2; /* Cosmic purple for links */
+    color: #A040FF; /* Brighter purple for links */
     text-decoration: none;
+    transition: color 0.3s ease;
 }
-
 a:hover {
-    color: #A040FF;
+    color: #C060FF;
     text-decoration: underline;
 }
 
-/* Navbar Styles */
+/* Navbar Styles (mostly unchanged, minor adjustments if any) */
 .navbar {
-    background-color: #1A0F3B; /* Darker shade for navbar */
+    background-color: rgba(26, 15, 59, 0.85); /* Slightly transparent navbar */
+    backdrop-filter: blur(10px);
     padding: 10px 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #2A1F4B;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    position: fixed; /* Fixed navbar */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
 }
+.navbar-brand a { color: #E0E0FF; font-size: 1.5em; font-weight: bold; }
+.navbar-brand i { margin-right: 8px; color: #8A2BE2; }
+.navbar-user-info { display: flex; align-items: center; position: relative; }
+#user-name-nav { margin-right: 15px; color: #C0C0FF; font-size: 0.9em; }
+#user-name-nav i { margin-right: 5px; }
+.profile-pic-nav { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid #8A2BE2; object-fit: cover;}
+.profile-dropdown { display: none; position: absolute; top: 55px; right: 0; background-color: #1A0F3B; border: 1px solid #2A1F4B; border-radius: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1001; width: 200px; overflow: hidden; }
+.profile-dropdown.show { display: block; }
+.profile-dropdown a { display: block; padding: 12px 15px; color: #E0E0FF; font-size: 0.9em; }
+.profile-dropdown a:hover { background-color: #2A1F4B; text-decoration: none; }
+.profile-dropdown a i { margin-right: 10px; width: 16px; text-align: center; }
 
-.navbar-brand a {
-    color: #E0E0FF;
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
-.navbar-brand i {
-    margin-right: 8px;
-    color: #8A2BE2; /* Accent color for icon */
-}
-
-.navbar-user-info {
+/* Hero Section Styles */
+.post-hero-section {
+    position: relative;
+    width: 100%;
+    height: 60vh; /* Adjust height as needed */
+    min-height: 300px;
+    max-height: 500px;
     display: flex;
     align-items: center;
-    position: relative;
-}
-
-#user-name-nav {
-    margin-right: 15px;
-    color: #C0C0FF;
-    font-size: 0.9em;
-}
-#user-name-nav i {
-    margin-right: 5px;
-}
-
-.profile-pic-nav {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #8A2BE2;
-}
-
-.profile-dropdown {
-    display: none;
-    position: absolute;
-    top: 50px; /* Adjust as needed */
-    right: 0;
-    background-color: #1A0F3B;
-    border: 1px solid #2A1F4B;
-    border-radius: 5px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    z-index: 1000;
-    width: 180px;
-    overflow: hidden;
-}
-
-.profile-dropdown.show {
-    display: block;
-}
-
-.profile-dropdown a {
-    display: block;
-    padding: 12px 15px;
-    color: #E0E0FF;
-    font-size: 0.9em;
-}
-
-.profile-dropdown a:hover {
-    background-color: #2A1F4B;
-    text-decoration: none;
-}
-
-.profile-dropdown a i {
-    margin-right: 10px;
-    width: 16px;
+    justify-content: center;
     text-align: center;
+    overflow: hidden;
+    margin-top: 60px; /* Account for fixed navbar height */
 }
-
+.hero-image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 2, 31, 0.65); /* Dark overlay, adjust opacity */
+    z-index: 2;
+}
+.hero-content {
+    position: relative;
+    z-index: 3;
+    padding: 20px;
+    color: #FFFFFF;
+}
+.post-title-hero {
+    font-size: 3em; /* Adjust size as needed */
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
 
 /* Post Specific Styles */
 .post {
-    padding: 20px;
+    padding: 25px;
     border-radius: 8px;
-    background-color: #180C3D; /* Slightly different shade for post area */
+    background-color: transparent; /* Container provides background */
 }
 
-.post-header {
-    margin-bottom: 20px;
+.post-meta-container {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
     border-bottom: 1px solid #2A1F4B;
-    padding-bottom: 20px;
-}
-
-.post-title-main {
-    font-size: 2.5em;
-    font-weight: 700;
-    color: #FFFFFF;
-    margin-bottom: 10px;
-    line-height: 1.2;
-}
-
-.post-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Space between upper and lower meta */
     font-size: 0.9em;
-    color: #A0A0CF; /* Lighter purple for meta */
+    color: #A0A0CF;
+}
+.post-meta-upper {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
 }
-
 .author-avatar-small {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 12px;
     border: 1px solid #8A2BE2;
-}
-
-.post-meta span {
-    margin-right: 10px;
-}
-
-.featured-image-display {
-    width: 100%;
-    max-height: 450px;
     object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    border: 3px solid #2A1F4B;
+}
+#post-author-name {
+    font-weight: 600;
+    color: #C0C0FF;
+}
+.post-meta-lower span {
+    margin-right: 10px;
 }
 
 .post-content {
     font-size: 1.1em;
     line-height: 1.7;
 }
+.post-content h1, .post-content h2, .post-content h3, .post-content h4 { color: #F0F0FF; margin-top: 1.5em; margin-bottom: 0.5em; }
+.post-content p { margin-bottom: 1em; }
+.post-content strong { color: #CFCFFF; }
+.post-content em { color: #BABAFF; }
+.post-content a { color: #9F50FF; font-weight: bold; }
+.post-content a:hover { color: #B070FF; }
+.post-content ul, .post-content ol { margin-left: 20px; margin-bottom: 1em; padding-left: 15px;}
+.post-content blockquote { border-left: 4px solid #8A2BE2; margin-left: 0; padding-left: 20px; font-style: italic; color: #B0B0DF; background-color: rgba(42, 31, 75, 0.3); padding-top:10px; padding-bottom:10px; border-radius: 0 4px 4px 0;}
+.post-content pre, .post-content code { background-color: #05010D; border: 1px solid #2A1F4B; padding: 3px 6px; border-radius: 4px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 0.95em; color: #D0D0F0; }
+.post-content pre { padding: 15px; overflow-x: auto; margin-bottom: 1em; }
+.post-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 15px auto; display: block; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 2px solid #2A1F4B;}
 
-/* Styles for content that might come from TinyMCE */
-.post-content h1, .post-content h2, .post-content h3, .post-content h4 {
-    color: #F0F0FF;
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
+/* Post Actions (Like, Comment, Share) */
+.post-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #2A1F4B;
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
-.post-content p {
-    margin-bottom: 1em;
-}
-.post-content strong {
-    color: #CFCFFF;
-}
-.post-content em {
-    color: #BABAFF;
-}
-.post-content a {
-    color: #9F50FF; /* Slightly different link color for content */
-    font-weight: bold;
-}
-.post-content a:hover {
-    color: #B070FF;
-}
-.post-content ul, .post-content ol {
-    margin-left: 20px;
-    margin-bottom: 1em;
-}
-.post-content blockquote {
-    border-left: 4px solid #8A2BE2;
-    margin-left: 0;
-    padding-left: 15px;
-    font-style: italic;
-    color: #B0B0DF;
-}
-.post-content pre, .post-content code {
-    background-color: #05010D;
-    border: 1px solid #2A1F4B;
-    padding: 2px 5px;
-    border-radius: 4px;
-    font-family: 'Courier New', Courier, monospace;
+.action-button {
+    background-color: #2A1F4B;
+    color: #E0E0FF;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px; /* Pill shape */
+    cursor: pointer;
     font-size: 0.95em;
-    color: #D0D0F0;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
-.post-content pre {
-    padding: 10px;
-    overflow-x: auto;
+.action-button:hover {
+    background-color: #3A2F5B;
+    transform: translateY(-2px);
 }
-.post-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin: 10px 0;
-    display: block; /* To center with margin auto if needed */
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+.action-button:active {
+    transform: translateY(0px);
+}
+.action-button i {
+    font-size: 1.1em;
+}
+#like-button.liked i { /* Style for liked state */
+    color: #FF69B4; /* Hot Pink for liked heart */
+    font-weight: bold; /* Make it a solid heart */
 }
 
-/* Loading and Message Styles */
-.loading-indicator {
+.share-tooltip {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3A2F5B;
+    color: #E0E0FF;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.share-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* Comments Area */
+.comments-area {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #2A1F4B;
+}
+.comments-area h2 {
+    color: #C0C0FF;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+.comments-area h2 i {
+    margin-right: 10px;
+    color: #8A2BE2;
+}
+.login-prompt {
+    background-color: rgba(42, 31, 75, 0.5);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
     text-align: center;
-    padding: 30px;
-    font-size: 1.2em;
+}
+.login-prompt i {
+    margin-right: 8px;
+    color: #FFD700; /* Gold for info icon */
+}
+#comments-list p {
     color: #A0A0CF;
 }
-.loading-indicator i {
-    margin-right: 10px;
-}
 
-.message-area {
-    padding: 15px;
-    margin: 20px 0;
-    border-radius: 5px;
-    text-align: center;
-    font-weight: bold;
-}
-.message-area.error {
-    background-color: #5c0e0e;
-    color: #ffc0c0;
-    border: 1px solid #8c1717;
-}
-.message-area.success {
-    background-color: #0e5c1c;
-    color: #c0ffc8;
-    border: 1px solid #178c2a;
-}
-.message-area i {
-    margin-right: 8px;
-}
-
+/* Message Area */
+.message-area { padding: 15px; margin: 20px 0; border-radius: 5px; text-align: center; font-weight: bold; }
+.message-area.error { background-color: #5c0e0e; color: #ffc0c0; border: 1px solid #8c1717; }
+.message-area.success { background-color: #0e5c1c; color: #c0ffc8; border: 1px solid #178c2a; }
+.message-area i { margin-right: 8px; }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 20px;
+    padding: 30px 20px;
     margin-top: 30px;
     font-size: 0.9em;
     color: #A0A0CF;
-    border-top: 1px solid #2A1F4B;
+    border-top: 1px solid #1A0F3B; /* Darker border for footer */
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .container {
-        margin: 10px;
+        margin: 0 10px;
         padding: 15px;
+        border-radius: 0; /* Full width on mobile */
     }
-    .post-title-main {
-        font-size: 2em;
+    .post-hero-section {
+        height: 45vh;
+        min-height: 250px;
+        margin-top: 55px; /* Adjust for potentially smaller navbar */
+    }
+    .post-title-hero {
+        font-size: 2.2em;
     }
     .post-content {
         font-size: 1em;
     }
     .navbar {
-        padding: 10px 15px;
+        padding: 8px 15px;
     }
     .navbar-brand a {
         font-size: 1.3em;
     }
     #user-name-nav {
         display: none; /* Hide name on smaller screens for space */
+    }
+    .post-actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch; /* Make buttons full width in column */
+    }
+    .action-button {
+        justify-content: center; /* Center icon and text */
+    }
+}
+@media (max-width: 480px) {
+    .post-title-hero {
+        font-size: 1.8em;
+    }
+     .profile-dropdown {
+        width: 160px; /* Slightly narrower dropdown on small screens */
     }
 }
