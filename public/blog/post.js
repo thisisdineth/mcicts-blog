@@ -1,8 +1,10 @@
+// post.js
 document.addEventListener('DOMContentLoaded', function () {
-    // Firebase services are from firebase-config.js
+    // Firebase services are initialized in firebase-config.js and should be globally available
     // const auth = firebase.auth();
     // const database = firebase.database();
 
+    // --- DOM Element Selection ---
     const loadingOverlay = document.getElementById('loading-overlay');
     const postDetailContainer = document.getElementById('post-detail-container');
     const postNotFoundDiv = document.getElementById('post-not-found');
@@ -13,9 +15,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const userNameNav = document.getElementById('user-name-nav');
     const signOutBtnNav = document.getElementById('sign-out-btn-nav');
     const navCreatePostBtn = document.getElementById('nav-create-post-btn');
-    const defaultProfilePic = '../images/default-avatar.png';
+    const defaultProfilePic = '../images/default-avatar.png'; // Ensure this path is correct
 
-    // Post elements
+    // Post detail elements
     const postTitleMain = document.getElementById('post-title-main');
     const postCategoryMain = document.getElementById('post-category-main');
     const postDateMain = document.getElementById('post-date-main');
@@ -34,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const editPostBtn = document.getElementById('edit-post-btn');
     const deletePostBtn = document.getElementById('delete-post-btn');
 
-
     // Comments elements
     const commentsList = document.getElementById('comments-list');
     const commentCountSpan = document.getElementById('comment-count');
@@ -44,137 +45,160 @@ document.addEventListener('DOMContentLoaded', function () {
     const submitCommentBtn = document.getElementById('submit-comment-btn');
     const commentLoginPrompt = document.getElementById('comment-login-prompt');
 
+    // --- Global State ---
     let currentUser = null;
     let currentPostId = null;
-    let currentPostData = null; // Store fetched post data
+    let currentPostData = null;
 
-    // Get post ID from URL
+    // --- Initialization ---
     const urlParams = new URLSearchParams(window.location.search);
     currentPostId = urlParams.get('id');
 
+    // Firebase Auth State Change Listener
     auth.onAuthStateChanged(user => {
         currentUser = user;
+        updateNavbarUserInterface(user); // Update navbar based on login state
+        
         if (user) {
-            loadUserProfile(user, true); // Load for navbar and for comment form
-            addCommentFormContainer.style.display = 'block';
-            commentLoginPrompt.style.display = 'none';
-            if(navCreatePostBtn) navCreatePostBtn.style.display = 'inline-flex';
+            if (addCommentFormContainer) addCommentFormContainer.style.display = 'block';
+            if (commentLoginPrompt) commentLoginPrompt.style.display = 'none';
+            if (navCreatePostBtn) navCreatePostBtn.style.display = 'inline-flex';
         } else {
-            loadUserProfile(null, true); // Clear navbar user info
-            addCommentFormContainer.style.display = 'none';
-            commentLoginPrompt.style.display = 'block';
-            if(navCreatePostBtn) navCreatePostBtn.style.display = 'none';
+            if (addCommentFormContainer) addCommentFormContainer.style.display = 'none';
+            if (commentLoginPrompt) commentLoginPrompt.style.display = 'block';
+            if (navCreatePostBtn) navCreatePostBtn.style.display = 'none';
         }
-        // Fetch post data regardless of login state, but actions might depend on it
+
         if (currentPostId) {
             fetchPostDetails(currentPostId);
             fetchComments(currentPostId);
         } else {
-            showErrorState("No transmission ID provided.");
+            showErrorState("No transmission ID specified in the URL.");
         }
-        setupNavbarEventListeners();
+        setupNavbarEventListeners(); // Setup listeners after auth state is known
     });
 
-
-    function loadUserProfile(user, isForNavbar = false) {
-        if (isForNavbar) {
-            if (user) {
-                const userRef = database.ref('users/' + user.uid);
-                userRef.once('value').then(snapshot => {
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        userProfilePictureNav.src = userData.profilePictureURL || defaultProfilePic;
-                        userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${userData.name || user.displayName || 'User'}`;
-                    } else {
-                        userProfilePictureNav.src = defaultProfilePic;
-                        userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.displayName || 'User'}`;
-                    }
-                }).catch(error => {
-                    console.error("Error fetching user profile for navbar:", error);
+    // --- Navbar Functions ---
+    function updateNavbarUserInterface(user) {
+        if (user && userProfilePictureNav && userNameNav) {
+            const userRef = database.ref('users/' + user.uid);
+            userRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    userProfilePictureNav.src = userData.profilePictureURL || defaultProfilePic;
+                    userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${userData.name || user.displayName || 'User'}`;
+                } else {
                     userProfilePictureNav.src = defaultProfilePic;
-                    userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user ? (user.displayName || 'User') : 'Guest'}`;
-                });
-            } else { // No user logged in, clear navbar
+                    userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.displayName || 'User'}`;
+                }
+            }).catch(error => {
+                console.error("Error fetching user profile for navbar:", error);
                 userProfilePictureNav.src = defaultProfilePic;
-                userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> Guest`;
-            }
+                userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user ? (user.displayName || 'User') : 'Guest'}`;
+            });
+        } else if (userProfilePictureNav && userNameNav) { // No user logged in
+            userProfilePictureNav.src = defaultProfilePic;
+            userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> Guest`;
         }
     }
 
     function setupNavbarEventListeners() {
         if (userProfilePictureNav && profileDropdown) {
             userProfilePictureNav.addEventListener('click', (e) => {
-                e.stopPropagation();
+                e.stopPropagation(); // Prevent window click from closing it immediately
                 profileDropdown.classList.toggle('show');
             });
         }
         if (signOutBtnNav) {
             signOutBtnNav.addEventListener('click', () => {
                 auth.signOut().then(() => {
-                    window.location.reload(); // Reload to reflect logged-out state
+                    // UI updates are handled by onAuthStateChanged
+                    // window.location.reload(); // Or redirect to home/auth page
                 }).catch(error => console.error('Sign out error:', error));
             });
         }
+        // Close dropdown if clicked outside
         window.addEventListener('click', function(e) {
-            if (profileDropdown && profileDropdown.classList.contains('show') && 
-                !userProfilePictureNav.contains(e.target) && !profileDropdown.contains(e.target)) {
+            if (profileDropdown && profileDropdown.classList.contains('show') &&
+                userProfilePictureNav && !userProfilePictureNav.contains(e.target) && 
+                !profileDropdown.contains(e.target)) {
                 profileDropdown.classList.remove('show');
             }
         });
     }
 
-
+    // --- Post Fetching and Display ---
     async function fetchPostDetails(postId) {
-        loadingOverlay.style.display = 'flex';
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
         try {
-            const snapshot = await database.ref('posts/' + postId).once('value');
+            const postRef = database.ref('posts/' + postId);
+            const snapshot = await postRef.once('value');
+
             if (snapshot.exists()) {
                 currentPostData = snapshot.val();
                 document.title = currentPostData.title + " | Cosmic Chronicles";
-                postTitleMain.textContent = currentPostData.title;
-                postCategoryMain.textContent = currentPostData.category || 'Uncategorized';
-                postDateMain.textContent = new Date(currentPostData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                if (postTitleMain) postTitleMain.textContent = currentPostData.title;
+                if (postCategoryMain) postCategoryMain.textContent = currentPostData.category || 'Uncategorized';
+                if (postDateMain) postDateMain.textContent = new Date(currentPostData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 
-                // Calculate read time (approx)
-                const wordsPerMinute = 200; // Average reading speed
-                const noHtmlContent = currentPostData.content.replace(/<[^>]+>/g, ''); // Strip HTML tags
-                const wordCount = noHtmlContent.split(/\s+/).length;
-                const readTime = Math.ceil(wordCount / wordsPerMinute);
-                postReadTimeMain.textContent = `~ ${readTime} min read`;
+                if (postReadTimeMain && currentPostData.content) {
+                    const wordsPerMinute = 200;
+                    const noHtmlContent = currentPostData.content.replace(/<[^>]+>/g, '');
+                    const wordCount = noHtmlContent.split(/\s+/).length;
+                    const readTime = Math.ceil(wordCount / wordsPerMinute);
+                    postReadTimeMain.textContent = `~ ${readTime} min read`;
+                }
 
-                postContentMain.innerHTML = currentPostData.content; // Content from TinyMCE
+                if (postContentMain) postContentMain.innerHTML = currentPostData.content;
 
-                if (currentPostData.featuredImageUrl) {
-                    featuredImageContainer.style.backgroundImage = `url(${currentPostData.featuredImageUrl})`;
+                if (featuredImageContainer) {
+                    if (currentPostData.featuredImageUrl) {
+                        featuredImageContainer.style.backgroundImage = `url(${currentPostData.featuredImageUrl})`;
+                    } else {
+                        featuredImageContainer.style.backgroundImage = `url('../images/default-space-banner.jpg')`; // Ensure this default banner exists
+                        featuredImageContainer.style.backgroundColor = `var(--bg-dark-space)`;
+                    }
+                }
+
+                if (currentPostData.authorId) {
+                    fetchAuthorDetails(currentPostData.authorId);
                 } else {
-                    featuredImageContainer.style.backgroundImage = `url('../images/default-space-banner.jpg')`; // Provide a default banner
-                     featuredImageContainer.style.backgroundColor = `var(--bg-dark-space)`; // Fallback color
+                    // Handle posts with no authorId if necessary
+                    if(postAuthorNameMain) postAuthorNameMain.textContent = 'Unknown Author';
+                    if(postAuthorAvatarMain) postAuthorAvatarMain.src = defaultProfilePic;
                 }
 
-                // Fetch author details
-                fetchAuthorDetails(currentPostData.authorId);
-
-                // Show/hide Edit/Delete buttons
+                // Setup Edit/Delete buttons
                 if (currentUser && currentUser.uid === currentPostData.authorId) {
-                    editPostBtn.style.display = 'inline-flex';
-                    deletePostBtn.style.display = 'inline-flex';
-                    editPostBtn.onclick = () => {
-                        window.location.href = `../create-post/create-post.html?edit=true&id=${postId}`; // Need to implement edit mode in create-post
-                    };
-                    deletePostBtn.onclick = () => confirmDeletePost(postId, currentPostData.title);
+                    if (editPostBtn) {
+                        editPostBtn.style.display = 'inline-flex';
+                        editPostBtn.onclick = () => {
+                            // Implement edit functionality: redirect to create-post page with ID
+                            window.location.href = `../create-post/create-post.html?edit=true&id=${postId}`;
+                        };
+                    }
+                    if (deletePostBtn) {
+                        deletePostBtn.style.display = 'inline-flex';
+                        deletePostBtn.onclick = () => confirmDeletePost(postId, currentPostData.title);
+                    }
+                } else {
+                    if (editPostBtn) editPostBtn.style.display = 'none';
+                    if (deletePostBtn) deletePostBtn.style.display = 'none';
                 }
 
+                if (postDetailContainer) postDetailContainer.style.display = 'block';
+                if (postNotFoundDiv) postNotFoundDiv.style.display = 'none';
 
-                postDetailContainer.style.display = 'block';
-                postNotFoundDiv.style.display = 'none';
             } else {
-                showErrorState("Transmission signal lost. This post could not be found.");
+                showErrorState(`Transmission signal lost (ID: ${postId}). This post could not be found.`);
             }
         } catch (error) {
             console.error("Error fetching post details:", error);
             showErrorState("Error receiving transmission. Please try again later.");
         } finally {
-            loadingOverlay.style.display = 'none';
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     }
 
@@ -183,147 +207,167 @@ document.addEventListener('DOMContentLoaded', function () {
             const authorSnapshot = await database.ref('users/' + authorId).once('value');
             if (authorSnapshot.exists()) {
                 const authorData = authorSnapshot.val();
-                postAuthorNameMain.textContent = authorData.name || 'Unknown Explorer';
-                postAuthorAvatarMain.src = authorData.profilePictureURL || defaultProfilePic;
-
-                authorBioName.textContent = authorData.name || 'Unknown Explorer';
-                authorBioAvatar.src = authorData.profilePictureURL || defaultProfilePic;
-                authorBioText.textContent = authorData.bio || 'A dedicated explorer of the cosmos, always seeking the next great discovery.'; // Assuming a 'bio' field in user profile
+                if (postAuthorNameMain) postAuthorNameMain.textContent = authorData.name || 'Unknown Explorer';
+                if (postAuthorAvatarMain) postAuthorAvatarMain.src = authorData.profilePictureURL || defaultProfilePic;
+                if (authorBioName) authorBioName.textContent = authorData.name || 'Unknown Explorer';
+                if (authorBioAvatar) authorBioAvatar.src = authorData.profilePictureURL || defaultProfilePic;
+                if (authorBioText) authorBioText.textContent = authorData.bio || 'A dedicated explorer of the cosmos, always seeking the next great discovery.';
+            } else {
+                if (postAuthorNameMain) postAuthorNameMain.textContent = 'Author Not Found';
+                if (authorBioText) authorBioText.textContent = 'Author information is unavailable.';
             }
         } catch (error) {
-            console.error("Error fetching author details:", error);
-            postAuthorNameMain.textContent = 'Error Loading Author';
-            authorBioText.textContent = 'Could not load author information.';
+            console.error("Error fetching author details for post:", error);
+            if (postAuthorNameMain) postAuthorNameMain.textContent = 'Error Loading Author';
+            if (authorBioText) authorBioText.textContent = 'Could not load author information.';
         }
     }
 
+    // --- Post Actions (Edit/Delete) ---
     function confirmDeletePost(postId, postTitle) {
-        if (confirm(`Are you sure you want to PERMANENTLY delete the transmission titled "${postTitle}"? This action cannot be undone.`)) {
+        if (window.confirm(`Are you sure you want to PERMANENTLY delete the transmission titled "${postTitle}"? This action cannot be undone.`)) {
             deletePost(postId);
         }
     }
 
     async function deletePost(postId) {
-        if (!currentUser || currentUser.uid !== currentPostData.authorId) {
+        if (!currentUser || !currentPostData || currentUser.uid !== currentPostData.authorId) {
             alert("You are not authorized to delete this post.");
             return;
         }
-        loadingOverlay.style.display = 'flex';
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
         try {
-            // Optionally, delete associated images from storage here if you have their paths
-            // await storage.refFromURL(currentPostData.featuredImageUrl).delete();
-            // For TinyMCE images, you'd need to parse content, get URLs, and delete them - complex.
+            // Consider deleting associated images from Firebase Storage if needed (more complex)
+            // if (currentPostData.featuredImageUrl) {
+            //    const imageRef = storage.refFromURL(currentPostData.featuredImageUrl);
+            //    await imageRef.delete();
+            // }
 
             await database.ref('posts/' + postId).remove();
-            await database.ref('comments/' + postId).remove(); // Delete all comments for this post
+            await database.ref('comments/' + postId).remove(); // Also delete all comments for this post
 
-            alert("Transmission successfully deleted.");
+            alert("Transmission successfully deleted from the HoloNet.");
             window.location.href = '../blog/blog.html';
         } catch (error) {
             console.error("Error deleting post:", error);
             alert("Failed to delete transmission: " + error.message);
-            loadingOverlay.style.display = 'none';
+        } finally {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     }
 
-
-    async function fetchComments(postId) {
+    // --- Comments ---
+    function fetchComments(postId) {
         const commentsRef = database.ref('comments/' + postId).orderByChild('createdAt');
         commentsRef.on('value', snapshot => {
-            commentsList.innerHTML = ''; // Clear old comments
+            if (commentsList) commentsList.innerHTML = ''; // Clear old comments
             let count = 0;
             if (snapshot.exists()) {
                 snapshot.forEach(childSnapshot => {
                     const comment = childSnapshot.val();
-                    renderComment(comment);
-                    count++;
+                    if (comment) { // Ensure comment data is not null
+                        renderComment(comment);
+                        count++;
+                    }
                 });
             }
-            commentCountSpan.textContent = count;
-            if (count === 0) {
+            if (commentCountSpan) commentCountSpan.textContent = count;
+            if (count === 0 && commentsList) {
                 commentsList.innerHTML = '<p class="no-comments-message">No resonance signals yet. Be the first to discuss!</p>';
             }
+        }, error => {
+            console.error("Error fetching comments:", error);
+            if (commentsList) commentsList.innerHTML = '<p class="no-comments-message error">Could not load comments at this time.</p>';
         });
     }
 
     function renderComment(comment) {
+        if (!commentsList) return;
         const item = document.createElement('div');
         item.classList.add('comment-item');
+        
+        const commentDate = comment.createdAt ? 
+            new Date(comment.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) :
+            'Timestamp unavailable';
+
         item.innerHTML = `
-            <img src="${comment.authorProfilePic || defaultProfilePic}" alt="${comment.authorName}" class="comment-avatar">
+            <img src="${comment.authorProfilePic || defaultProfilePic}" alt="${comment.authorName || 'User'}" class="comment-avatar">
             <div class="comment-content">
-                <p class="comment-author">${comment.authorName} 
-                    <span class="comment-date">${new Date(comment.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                <p class="comment-author">${comment.authorName || 'Anonymous Cadet'} 
+                    <span class="comment-date">${commentDate}</span>
                 </p>
-                <p class="comment-text">${escapeHTML(comment.text)}</p>
+                <p class="comment-text">${escapeHTML(comment.text || '')}</p>
             </div>
         `;
         commentsList.appendChild(item);
     }
 
-    addCommentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!currentUser) {
-            alert("Please log in to comment.");
-            return;
-        }
-        const commentText = commentTextInput.value.trim();
-        if (!commentText) {
-            alert("Comment cannot be empty.");
-            return;
-        }
+    if (addCommentForm) {
+        addCommentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                alert("Please log in to send a signal (comment).");
+                return;
+            }
+            if (!commentTextInput) return;
+            const commentText = commentTextInput.value.trim();
+            if (!commentText) {
+                alert("Signal (comment) cannot be empty.");
+                return;
+            }
 
-        toggleButtonLoading(submitCommentBtn, true);
+            if (submitCommentBtn) toggleButtonLoading(submitCommentBtn, true);
 
-        const userProfileSnapshot = await database.ref('users/' + currentUser.uid).once('value');
-        const userProfile = userProfileSnapshot.val() || {};
+            try {
+                const userProfileSnapshot = await database.ref('users/' + currentUser.uid).once('value');
+                const userProfile = userProfileSnapshot.exists() ? userProfileSnapshot.val() : {};
 
-        const newComment = {
-            text: commentText,
-            authorId: currentUser.uid,
-            authorName: userProfile.name || currentUser.displayName || 'Anonymous Cadet',
-            authorProfilePic: userProfile.profilePictureURL || currentUser.photoURL || defaultProfilePic,
-            createdAt: firebase.database.ServerValue.TIMESTAMP
-        };
+                const newComment = {
+                    text: commentText,
+                    authorId: currentUser.uid,
+                    authorName: userProfile.name || currentUser.displayName || 'Anonymous Cadet',
+                    authorProfilePic: userProfile.profilePictureURL || currentUser.photoURL || defaultProfilePic,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                };
 
-        try {
-            await database.ref('comments/' + currentPostId).push(newComment);
-            commentTextInput.value = ''; // Clear textarea
-        } catch (error) {
-            console.error("Error adding comment:", error);
-            alert("Failed to send signal: " + error.message);
-        } finally {
-            toggleButtonLoading(submitCommentBtn, false);
-        }
-    });
-    
+                await database.ref('comments/' + currentPostId).push(newComment);
+                commentTextInput.value = ''; // Clear textarea
+            } catch (error) {
+                console.error("Error adding comment:", error);
+                alert("Failed to send signal: " + error.message);
+            } finally {
+                if (submitCommentBtn) toggleButtonLoading(submitCommentBtn, false);
+            }
+        });
+    }
+
+    // --- Helper Functions ---
     function escapeHTML(str) {
         const div = document.createElement('div');
         div.appendChild(document.createTextNode(str));
         return div.innerHTML;
     }
 
-
     function showErrorState(message) {
-        loadingOverlay.style.display = 'none';
-        postDetailContainer.style.display = 'none';
-        postNotFoundDiv.style.display = 'block';
-        postNotFoundDiv.querySelector('p').innerHTML = message + ` Try returning to the <a href="../blog/blog.html">HoloNet Archives</a>.`;
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        if (postDetailContainer) postDetailContainer.style.display = 'none';
+        if (postNotFoundDiv) {
+            postNotFoundDiv.style.display = 'block';
+            const pTag = postNotFoundDiv.querySelector('p');
+            if (pTag) {
+                pTag.innerHTML = `${escapeHTML(message)} Try returning to the <a href="../blog/blog.html">HoloNet Archives</a>.`;
+            }
+        }
         document.title = "Transmission Lost | Cosmic Chronicles";
     }
 
     function toggleButtonLoading(button, isLoading) {
+        if (!button) return;
         const textSpan = button.querySelector('.btn-text');
         const loaderSpan = button.querySelector('.btn-loader');
-        if (isLoading) {
-            button.disabled = true;
-            if(textSpan) textSpan.style.display = 'none';
-            if(loaderSpan) loaderSpan.style.display = 'inline-block';
-        } else {
-            button.disabled = false;
-            if(textSpan) textSpan.style.display = 'inline-block';
-            if(loaderSpan) loaderSpan.style.display = 'none';
-        }
+        
+        button.disabled = isLoading;
+        if (textSpan) textSpan.style.display = isLoading ? 'none' : 'inline-block';
+        if (loaderSpan) loaderSpan.style.display = isLoading ? 'inline-block' : 'none';
     }
-
 });
