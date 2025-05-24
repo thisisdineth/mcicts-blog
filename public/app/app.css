@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap');
 
 :root {
-    /* Re-using theme colors from auth.css */
     --bg-dark-space: #0F052B;
     --bg-darker-space: #0A021F;
-    --glassmorphism-bg: rgba(25, 15, 50, 0.65);
-    --glassmorphism-bg-light: rgba(35, 25, 60, 0.75); /* For cards inside */
-    --glassmorphism-border: rgba(120, 80, 200, 0.4);
+    --glassmorphism-bg: rgba(25, 15, 50, 0.75); /* Slightly more opaque */
+    --glassmorphism-bg-light: rgba(35, 25, 60, 0.85);
+    --glassmorphism-border: rgba(120, 80, 200, 0.3);
     --primary-neon: #00F0FF;
     --primary-neon-hover: #60F8FF;
     --secondary-neon: #F000FF;
@@ -16,23 +15,27 @@
     --text-light: #E0E0FF;
     --text-medium: #A0A0C0;
     --text-heading: #FFFFFF;
-    --text-dark: #1a1a2e; /* For text on light neon backgrounds */
+    --text-dark: #1a1a2e;
 
     --success-color: #00FF7F;
     --error-color: #FF4D4D;
+    --twitter-blue: #1DA1F2; /* Twitter-like color */
+    --twitter-red-liked: #E0245E;
+    --twitter-green-retweet: #17BF63; /* For share perhaps */
+
 
     --input-bg: rgba(255, 255, 255, 0.05);
-    --input-border: rgba(120, 80, 200, 0.3);
+    --input-border: rgba(120, 80, 200, 0.2);
     --input-focus-border: var(--primary-neon);
     --input-placeholder: #707090;
 
     --font-primary: 'Poppins', sans-serif;
     --font-headings: 'Orbitron', sans-serif;
 
-    --border-radius-main: 12px;
-    --border-radius-small: 8px;
-    --box-shadow-glow: 0 0 15px var(--accent-glow);
-    --card-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    --border-radius-main: 10px; /* Twitter uses rounder edges often */
+    --border-radius-small: 6px;
+    --box-shadow-glow: 0 0 12px var(--accent-glow);
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
 
 /* --- Global & Body --- */
@@ -45,21 +48,15 @@ body {
     position: relative;
 }
 
-.stars-bg { /* Copied from auth.css */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
+.stars-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: -1;
     background-image:
         radial-gradient(1px 1px at 20px 30px, #fff, rgba(255,255,255,0)),
         radial-gradient(1px 1px at 40px 70px, #fff, rgba(255,255,255,0)),
         radial-gradient(1px 1px at 50px 160px, #ddd, rgba(255,255,255,0)),
         radial-gradient(2px 2px at 90px 40px, #fff, rgba(255,255,255,0));
-    background-repeat: repeat;
-    background-size: 250px 250px; /* Slightly larger pattern */
+    background-repeat: repeat; background-size: 250px 250px;
     animation: twinkle 20s linear infinite alternate;
 }
 @keyframes twinkle {
@@ -69,50 +66,39 @@ body {
 
 .app-container {
     display: grid;
-    grid-template-columns: 280px 1fr 320px; /* Sidebar, Main, Sidebar */
+    grid-template-columns: 280px 1fr 320px;
     min-height: 100vh;
-    max-width: 1400px; /* Max overall width */
+    max-width: 1300px; /* Common max width for Twitter-like UIs */
     margin: 0 auto;
-    gap: 20px; /* Gap between columns */
+    gap: 15px;
 }
 
-/* --- General Button Styling (can be overridden) --- */
+/* --- General Button Styling --- */
 .btn-primary {
-    background-color: var(--primary-neon);
-    color: var(--text-dark);
+    background-color: var(--twitter-blue); /* Twitter Blue */
+    color: white;
     font-family: var(--font-headings);
     padding: 10px 20px;
     border: none;
-    border-radius: var(--border-radius-small);
+    border-radius: 20px; /* More rounded buttons */
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 0 10px var(--accent-glow);
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+    font-size: 0.95em;
 }
 .btn-primary:hover:not(:disabled) {
-    background-color: var(--primary-neon-hover);
-    box-shadow: 0 0 20px var(--accent-glow), 0 0 5px #fff;
+    background-color: #1A91DA; /* Darker Twitter Blue */
 }
-.btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .action-btn {
-    background: none;
-    border: none;
-    color: var(--primary-neon);
-    font-size: 1.3em;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: color 0.3s ease, background-color 0.3s ease;
+    background: none; border: none; color: var(--twitter-blue);
+    font-size: 1.2em; cursor: pointer; padding: 8px;
+    border-radius: 50%; transition: color 0.3s ease, background-color 0.3s ease;
 }
 .action-btn:hover {
-    color: var(--primary-neon-hover);
-    background-color: rgba(0, 240, 255, 0.1);
+    color: var(--twitter-blue); /* Keep color */
+    background-color: rgba(29, 161, 242, 0.1); /* Light blue background */
 }
 
 
@@ -120,732 +106,748 @@ body {
 .left-sidebar {
     background-color: var(--glassmorphism-bg);
     border-right: 1px solid var(--glassmorphism-border);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    position: sticky; /* Makes sidebar sticky within its grid cell */
-    top: 0;
-    height: 100vh;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 15px; display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
 .sidebar-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--font-headings);
-    font-size: 1.8em;
-    color: var(--primary-neon);
-    margin-bottom: 30px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-headings); font-size: 1.6em;
+    color: var(--primary-neon); margin-bottom: 25px; padding: 10px 0;
     text-shadow: 0 0 8px var(--primary-neon);
 }
-.sidebar-logo i { font-size: 1.2em; }
+.sidebar-logo i { font-size: 1.3em; }
 
-.nav-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    flex-grow: 1; /* Pushes user widget to bottom */
-}
-.nav-links li { margin-bottom: 10px; }
+.nav-links { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+.nav-links li { margin-bottom: 5px; }
 .nav-link {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 12px 15px;
-    border-radius: var(--border-radius-small);
-    color: var(--text-light);
-    text-decoration: none;
-    font-size: 1.1em;
-    font-weight: 500;
-    transition: background-color 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+    display: flex; align-items: center; gap: 18px;
+    padding: 12px 18px; border-radius: 25px; /* Pill shape */
+    color: var(--text-light); text-decoration: none;
+    font-size: 1.15em; font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
-.nav-link i {
-    font-size: 1.3em;
-    width: 25px; /* Icon alignment */
-    text-align: center;
-}
+.nav-link i { font-size: 1.4em; width: 28px; text-align: center; }
 .nav-link:hover, .nav-link.active {
-    background-color: var(--primary-neon);
-    color: var(--text-dark);
-    text-shadow: none;
+    background-color: rgba(29, 161, 242, 0.1);
+    color: var(--twitter-blue);
 }
-.nav-link:hover i, .nav-link.active i { color: var(--text-dark); }
+.nav-link.active { font-weight: 700; }
 
 .btn-post-thread {
-    background-color: var(--secondary-neon);
-    color: var(--text-heading);
-    font-family: var(--font-headings);
-    padding: 15px;
-    border: none;
-    border-radius: var(--border-radius-main);
-    font-size: 1.1em;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 0 10px var(--accent-glow-secondary);
+    background-color: var(--twitter-blue); color: white;
+    font-family: var(--font-headings); padding: 15px; border: none;
+    border-radius: 25px; font-size: 1.1em; font-weight: 700;
+    cursor: pointer; margin-top: 20px; margin-bottom: 20px;
+    text-transform: capitalize; /* Not uppercase */
+    transition: background-color 0.3s ease;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
 }
-.btn-post-thread:hover {
-    background-color: #ff40ff; /* Brighter magenta */
-    box-shadow: 0 0 20px var(--accent-glow-secondary), 0 0 5px #fff;
-}
+.btn-post-thread:hover { background-color: #1A91DA; }
 
 .user-profile-widget {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.2);
-    border-radius: var(--border-radius-small);
-    margin-top: auto; /* Pushes to bottom if flex-grow is on nav-links */
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px; border-radius: 25px; margin-top: auto;
+    transition: background-color 0.2s ease; cursor: pointer;
 }
+.user-profile-widget:hover { background-color: rgba(255,255,255,0.05); }
 .user-avatar-small {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--primary-neon);
-    object-fit: cover;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--primary-neon); object-fit: cover;
 }
-.user-info-small {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-.user-info-small span:first-child {
-    font-weight: 600;
-    color: var(--text-heading);
-}
-.user-info-small span:last-child {
-    font-size: 0.85em;
-    color: var(--text-medium);
-}
+.user-info-small { display: flex; flex-direction: column; flex-grow: 1; }
+.user-info-small span:first-child { font-weight: 600; color: var(--text-heading); }
+.user-info-small span:last-child { font-size: 0.9em; color: var(--text-medium); }
 .btn-logout {
-    background: none;
-    border: none;
-    color: var(--text-medium);
-    font-size: 1.3em;
-    cursor: pointer;
-    padding: 8px;
+    background: none; border: none; color: var(--text-medium);
+    font-size: 1.3em; cursor: pointer; padding: 8px;
 }
 .btn-logout:hover { color: var(--error-color); }
 
 
 /* --- Main Feed --- */
 .main-feed {
-    padding: 20px;
-    padding-top: 0; /* Header will have its own padding */
+    padding: 0; /* Header will manage top padding */
     border-left: 1px solid var(--glassmorphism-border);
     border-right: 1px solid var(--glassmorphism-border);
-    /* Allow main feed to scroll independently */
-    height: 100vh;
-    overflow-y: auto;
+    height: 100vh; overflow-y: auto;
 }
-/* Custom scrollbar for main feed */
 .main-feed::-webkit-scrollbar { width: 8px; }
 .main-feed::-webkit-scrollbar-track { background: var(--bg-dark-space); }
 .main-feed::-webkit-scrollbar-thumb {
-    background-color: var(--primary-neon);
+    background-color: var(--glassmorphism-border);
     border-radius: 4px;
-    border: 2px solid var(--bg-dark-space);
 }
-.main-feed::-webkit-scrollbar-thumb:hover { background-color: var(--primary-neon-hover); }
+.main-feed::-webkit-scrollbar-thumb:hover { background-color: var(--primary-neon); }
 
 .feed-header {
-    position: sticky;
-    top: 0;
-    background-color: var(--glassmorphism-bg); /* Match sidebar for consistency */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    position: sticky; top: 0;
+    background-color: var(--glassmorphism-bg);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     padding: 15px 20px;
-    margin: 0 -20px 20px -20px; /* Extend to edges of .main-feed padding */
     border-bottom: 1px solid var(--glassmorphism-border);
     z-index: 10;
 }
 .feed-header h2 {
-    font-family: var(--font-headings);
-    color: var(--text-heading);
-    font-size: 1.5em;
-    margin: 0;
+    font-family: var(--font-headings); color: var(--text-heading);
+    font-size: 1.3em; margin: 0;
 }
 
 .create-post-inline {
-    background-color: var(--glassmorphism-bg-light);
-    padding: 15px;
-    border-radius: var(--border-radius-main);
-    margin-bottom: 25px;
-    border: 1px solid var(--glassmorphism-border);
+    background-color: transparent; /* No distinct background for inline create post */
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--glassmorphism-border);
+    margin-bottom: 0; /* Removed bottom margin */
 }
 .create-post-inline textarea {
-    width: 100%;
-    min-height: 80px;
-    background-color: var(--input-bg);
-    border: 1px solid var(--input-border);
-    border-radius: var(--border-radius-small);
-    padding: 10px;
-    color: var(--text-light);
-    font-family: var(--font-primary);
-    font-size: 1em;
-    resize: vertical;
+    width: 100%; min-height: 60px; background-color: transparent;
+    border: none; border-radius: 0;
+    padding: 10px 0; color: var(--text-light);
+    font-family: var(--font-primary); font-size: 1.1em; resize: vertical;
     margin-bottom: 10px;
 }
-.create-post-inline textarea:focus {
-    outline: none;
-    border-color: var(--input-focus-border);
-    box-shadow: 0 0 8px var(--accent-glow);
-}
+.create-post-inline textarea:focus { outline: none; }
 .inline-post-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
+    display: flex; justify-content: space-between; align-items: center;
 }
+.inline-post-actions > div { display: flex; gap: 5px; } /* Group icons */
+
 
 .image-preview-container {
-    margin-top: 10px;
-    position: relative;
-    display: inline-block; /* Fit to image size */
+    margin-top: 10px; position: relative; display: inline-block;
 }
 .image-preview-container img {
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: var(--border-radius-small);
-    border: 1px solid var(--input-border);
+    max-width: 100%; max-height: 200px; border-radius: var(--border-radius-main);
+    border: 1px solid var(--glassmorphism-border);
 }
 .remove-image-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(0,0,0,0.7);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    font-size: 14px;
-    line-height: 24px;
-    text-align: center;
-    cursor: pointer;
+    position: absolute; top: 8px; right: 8px;
+    background-color: rgba(0,0,0,0.7); color: white;
+    border: none; border-radius: 50%; width: 28px; height: 28px;
+    font-size: 16px; line-height: 28px; text-align: center; cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+.remove-image-btn:hover { background-color: rgba(0,0,0,0.9); }
 
-.feed-threads {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-.thread-item-placeholder {
-    padding: 20px;
-    text-align: center;
-    color: var(--text-medium);
-}
+.feed-threads { display: flex; flex-direction: column; /* No gap, borders will separate */ }
+.thread-item-placeholder { padding: 30px 20px; text-align: center; color: var(--text-medium); }
+
 .thread-item {
-    background-color: var(--glassmorphism-bg-light);
+    background-color: transparent; /* No distinct card background */
     padding: 15px 20px;
-    border-radius: var(--border-radius-main);
-    border: 1px solid var(--glassmorphism-border);
-    box-shadow: var(--card-shadow);
+    border-bottom: 1px solid var(--glassmorphism-border);
+    transition: background-color 0.2s ease;
+    /* cursor: pointer; Making the whole item clickable for detail view (future) */
 }
+.thread-item:hover { background-color: rgba(255,255,255,0.03); }
+
+.thread-main-content { display: flex; gap: 12px; }
+.thread-avatar-container { flex-shrink: 0; }
+.thread-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    object-fit: cover; border: 1px solid var(--glassmorphism-border);
+}
+.thread-body { flex-grow: 1; }
+
 .thread-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 5px; position: relative;
+}
+.thread-user-link { text-decoration: none; color: inherit;} /* Ensure links inherit color for name/callsign */
+.thread-user-info strong {
+    color: var(--text-heading); font-weight: 600; font-size: 1em;
+}
+.thread-user-info strong:hover { text-decoration: underline; }
+.thread-user-info .callsign, .thread-user-info .timestamp-separator {
+    color: var(--text-medium); font-size: 0.95em;
+}
+.thread-timestamp { color: var(--text-medium); font-size: 0.95em; }
+.thread-options-btn { /* For delete/report menu */
+    margin-left: auto; background: none; border: none; color: var(--text-medium);
+    font-size: 1em; padding: 5px; border-radius: 50%; cursor: pointer;
+}
+.thread-options-btn:hover { background-color: rgba(29, 161, 242, 0.1); color: var(--twitter-blue); }
+.thread-options-menu {
+    position: absolute;
+    top: 25px;
+    right: 0;
+    background-color: var(--bg-darker-space);
+    border: 1px solid var(--glassmorphism-border);
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    z-index: 20;
+    overflow: hidden;
+    min-width: 180px; /* Slightly wider for text */
+}
+.thread-options-menu button {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
-}
-.thread-avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--secondary-neon);
-}
-.thread-user-info strong {
-    color: var(--text-heading);
-    font-weight: 600;
-}
-.thread-user-info span {
-    color: var(--text-medium);
-    font-size: 0.9em;
-    margin-left: 8px;
-}
-.thread-timestamp {
-    color: var(--text-medium);
-    font-size: 0.8em;
-    margin-left: auto; /* Pushes timestamp to the right */
-}
-.thread-content p {
-    margin: 0 0 10px 0;
-    line-height: 1.6;
-    white-space: pre-wrap; /* Preserve line breaks */
-}
-.thread-image {
     width: 100%;
-    max-height: 400px; /* Limit image height */
-    object-fit: cover;
-    border-radius: var(--border-radius-small);
-    margin-bottom: 10px;
-    border: 1px solid var(--input-border);
-}
-.thread-actions {
-    display: flex;
-    gap: 15px;
-    border-top: 1px solid var(--input-border);
-    padding-top: 10px;
-    margin-top: 10px;
-}
-.thread-action-btn {
+    padding: 10px 15px;
     background: none;
     border: none;
-    color: var(--text-medium);
-    font-size: 0.95em;
+    color: var(--text-light);
+    text-align: left;
+    font-size: 0.9em;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 8px;
-    border-radius: var(--border-radius-small);
+}
+.thread-options-menu button i { width: 15px; text-align: center; margin-right: 5px; }
+.thread-options-menu button:hover { background-color: rgba(255,255,255,0.07); }
+.thread-options-menu button.delete-option:hover { background-color: rgba(224, 36, 94, 0.1); color: var(--twitter-red-liked); }
+
+
+.thread-content p {
+    margin: 0 0 10px 0; line-height: 1.6; white-space: pre-wrap;
+    font-size: 0.95em; /* Slightly smaller for content */
+    color: var(--text-light); /* Ensure good readability */
+    word-break: break-word;
+}
+.thread-image {
+    width: 100%; max-height: 450px; object-fit: cover;
+    border-radius: var(--border-radius-main); margin-top: 10px; margin-bottom: 10px;
+    border: 1px solid var(--glassmorphism-border); cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+.thread-image:hover { opacity: 0.9; }
+
+.thread-actions {
+    display: flex; justify-content: space-around; /* Distribute actions */
+    margin-top: 12px; padding-top: 0; border-top: none;
+}
+.thread-action-btn {
+    background: none; border: none; color: var(--text-medium);
+    font-size: 0.85em; /* Smaller text for action counts */
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    padding: 6px; border-radius: 20px;
     transition: color 0.2s ease, background-color 0.2s ease;
 }
-.thread-action-btn i { font-size: 1.2em; }
-.thread-action-btn:hover {
-    color: var(--primary-neon);
-    background-color: rgba(0, 240, 255, 0.1);
-}
-.thread-action-btn.liked {
-    color: var(--secondary-neon); /* Or your 'liked' color */
-}
-.thread-action-btn.liked:hover {
-    color: #ff40ff;
-    background-color: rgba(240, 0, 255, 0.1);
+.thread-action-btn i { font-size: 1.2em; } /* Icon size */
+
+.thread-action-btn.btn-reply:hover { color: var(--twitter-blue); background-color: rgba(29, 161, 242, 0.1); }
+.thread-action-btn.btn-like:hover { color: var(--twitter-red-liked); background-color: rgba(224, 36, 94, 0.1); }
+.thread-action-btn.btn-like.liked { color: var(--twitter-red-liked); }
+.thread-action-btn.btn-like.liked i { animation: heartBeat 0.5s ease; }
+.thread-action-btn.btn-share:hover { color: var(--twitter-green-retweet); background-color: rgba(23, 191, 99, 0.1); }
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
 }
 
 .spinner {
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border-left-color: var(--primary-neon);
-    animation: spin 1s ease infinite;
-    margin: 20px auto;
+    border: 4px solid rgba(255, 255, 255, 0.1); width: 36px; height: 36px;
+    border-radius: 50%; border-left-color: var(--primary-neon);
+    animation: spin 1s ease infinite; margin: 20px auto;
 }
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 
 /* --- Right Sidebar --- */
 .right-sidebar {
     background-color: var(--glassmorphism-bg);
     border-left: 1px solid var(--glassmorphism-border);
-    padding: 20px;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto; /* Allow sidebar to scroll */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 15px; position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
 .right-sidebar::-webkit-scrollbar { width: 6px; }
 .right-sidebar::-webkit-scrollbar-track { background: transparent; }
-.right-sidebar::-webkit-scrollbar-thumb {
-    background-color: var(--secondary-neon);
-    border-radius: 3px;
-}
+.right-sidebar::-webkit-scrollbar-thumb { background-color: var(--secondary-neon); border-radius: 3px; }
 .right-sidebar::-webkit-scrollbar-thumb:hover { background-color: #ff40ff; }
 
 .sidebar-section {
-    margin-bottom: 25px;
-    background-color: var(--glassmorphism-bg-light);
-    padding: 15px;
-    border-radius: var(--border-radius-main);
+    margin-bottom: 20px; background-color: var(--glassmorphism-bg-light);
+    padding: 15px; border-radius: var(--border-radius-main);
     border: 1px solid var(--glassmorphism-border);
 }
 .sidebar-section h3 {
-    font-family: var(--font-headings);
-    color: var(--secondary-neon);
-    font-size: 1.2em;
-    margin-top: 0;
-    margin-bottom: 15px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--glassmorphism-border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-family: var(--font-headings); color: var(--secondary-neon);
+    font-size: 1.1em; margin-top: 0; margin-bottom: 15px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--glassmorphism-border);
+    display: flex; align-items: center; gap: 8px;
 }
-.suggestion-list, .trending-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+.suggestion-list, .trending-list { list-style: none; padding: 0; margin: 0; }
 .suggestion-list li, .trending-list li {
-    padding: 8px 0;
-    font-size: 0.95em;
-    color: var(--text-light);
+    padding: 10px 0; font-size: 0.9em; color: var(--text-light);
     border-bottom: 1px solid var(--input-border);
-    transition: color 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 .suggestion-list li:last-child, .trending-list li:last-child { border-bottom: none; }
-.suggestion-list li:hover, .trending-list li:hover { color: var(--primary-neon); cursor: pointer; }
+.suggestion-list li > a:hover, .trending-list li > a:hover { /* Target the anchor inside li for hover */
+    background-color: rgba(255,255,255,0.05);
+    display: block; /* Make anchor fill li for better hover */
+    margin: -10px 0; /* Counteract padding to fill */
+    padding: 10px 0; /* Re-apply padding */
+}
+
+
+.suggestion-user-link {
+    display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;
+    padding: 5px; /* Add some padding to the link itself for hover area */
+    border-radius: var(--border-radius-small);
+}
+.suggestion-avatar {
+    width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+}
+.suggestion-user-info strong { color: var(--text-heading); display: block; }
+.suggestion-user-info span { color: var(--text-medium); font-size: 0.9em; }
+
+.trending-item-link {
+    text-decoration: none; color: var(--text-light);
+    display: block; /* Make link fill for better hover */
+    padding: 5px;
+    border-radius: var(--border-radius-small);
+}
+.trending-item-link p { margin: 0 0 5px 0; font-weight: 500;}
+.trending-item-link small { color: var(--text-medium); font-size: 0.85em; }
+
 
 .sidebar-footer {
-    text-align: center;
-    font-size: 0.8em;
-    color: var(--text-medium);
-    margin-top: 30px;
-    padding-top: 15px;
+    text-align: center; font-size: 0.8em; color: var(--text-medium);
+    margin-top: 25px; padding-top: 15px;
     border-top: 1px solid var(--glassmorphism-border);
 }
 
-/* --- Modal --- (Copied from auth.css and adapted slightly) */
+/* --- Modal --- */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1001; /* Higher than feed header */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(10, 2, 31, 0.8); /* Darker for more focus */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    display: none; position: fixed; z-index: 1001; left: 0; top: 0;
+    width: 100%; height: 100%; overflow: auto;
+    background-color: rgba(10, 2, 31, 0.85);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    justify-content: center; align-items: center; padding: 20px;
 }
 .modal.show { display: flex; }
 .modal-content {
-    background-color: var(--glassmorphism-bg);
+    background-color: var(--bg-dark-space); /* Darker modal background */
     border: 1px solid var(--glassmorphism-border);
-    padding: 25px 30px;
-    width: 100%;
-    max-width: 600px; /* Wider for post composition */
+    padding: 20px; width: 100%; max-width: 600px;
     border-radius: var(--border-radius-main);
-    box-shadow: 0 0 30px var(--accent-glow), 0 0 50px rgba(0,0,0,0.5);
-    position: relative;
-    animation: zoomInSpace 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 25px var(--accent-glow), 0 0 40px rgba(0,0,0,0.4);
+    position: relative; animation: zoomInSpace 0.3s ease-out;
 }
 @keyframes zoomInSpace {
-    from { opacity: 0; transform: scale(0.8) rotate(-5deg); }
-    to { opacity: 1; transform: scale(1) rotate(0deg); }
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
 .modal-content .close-button {
-    color: var(--text-medium);
-    background: none;
-    border: none;
-    font-size: 30px;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    cursor: pointer;
-    transition: color 0.3s ease, transform 0.3s ease;
+    color: var(--text-medium); background: none; border: none;
+    font-size: 28px; position: absolute; top: 15px; right: 15px;
+    cursor: pointer; transition: color 0.3s ease, transform 0.3s ease;
+    padding: 5px; line-height: 1; border-radius: 50%;
 }
 .modal-content .close-button:hover {
-    color: var(--secondary-neon);
-    transform: rotate(90deg);
+    color: var(--primary-neon); background-color: rgba(255,255,255,0.1);
 }
 .modal-content h2 {
-    font-family: var(--font-headings);
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-align: center;
-    color: var(--primary-neon);
-    font-size: 1.7em;
-    text-shadow: 0 0 8px var(--primary-neon);
+    font-family: var(--font-headings); margin-top: 0; margin-bottom: 20px;
+    text-align: left; /* Align left like Twitter modals */
+    color: var(--text-heading); font-size: 1.4em;
+    padding-bottom: 15px; border-bottom: 1px solid var(--glassmorphism-border);
 }
+.modal-content h2 i { margin-right: 10px; color: var(--primary-neon); }
 .modal-content textarea {
-    width: 100%;
-    min-height: 120px;
+    width: 100%; min-height: 120px; background-color: transparent;
+    border: none; border-radius: 0;
+    padding: 10px 0; color: var(--text-light);
+    font-family: var(--font-primary); font-size: 1.1em; resize: vertical;
+    margin-bottom: 15px;
+}
+.modal-content textarea:focus { outline: none; }
+.modal-actions {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--glassmorphism-border);
+}
+.modal-actions > div { display: flex; gap: 5px; }
+
+/* --- Poll Creation Styles --- */
+.poll-creation-area {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--glassmorphism-border);
+}
+.poll-creation-area h4 {
+    font-size: 0.9em;
+    color: var(--text-medium);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+#modal-poll-options-container input,
+#inline-poll-options-container input {
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
     border-radius: var(--border-radius-small);
-    padding: 12px;
+    padding: 8px 12px;
     color: var(--text-light);
-    font-family: var(--font-primary);
-    font-size: 1em;
-    resize: vertical;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
+    width: 100%;
+    font-size: 0.95em;
 }
-.modal-content textarea:focus {
+#modal-poll-options-container input:focus,
+#inline-poll-options-container input:focus {
     outline: none;
     border-color: var(--input-focus-border);
-    box-shadow: 0 0 8px var(--accent-glow);
-}
-.modal-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
+    box-shadow: 0 0 5px var(--accent-glow);
 }
 
-/* --- Responsive Adjustments --- */
-@media (max-width: 1200px) {
-    .app-container {
-        grid-template-columns: 260px 1fr 300px; /* Slightly smaller sidebars */
-    }
+/* --- Poll Display Styles (Updated) --- */
+.thread-poll {
+    margin-top: 10px;
+    border: 1px solid var(--glassmorphism-border);
+    border-radius: var(--border-radius-main);
+    padding: 10px 15px;
 }
-@media (max-width: 992px) { /* Tablet */
-    .app-container {
-        grid-template-columns: 80px 1fr; /* Collapsed left, hide right */
-    }
-    .right-sidebar { display: none; }
-    .left-sidebar .nav-link span,
-    .left-sidebar .sidebar-logo span,
-    .left-sidebar .user-info-small,
-    .left-sidebar .btn-post-thread span:not(.fa-plus-circle) { /* Keep icon */
-        display: none;
-    }
-    .left-sidebar .nav-link i { margin-right: 0; }
-    .left-sidebar .btn-post-thread {
-        width: 50px; height: 50px; border-radius: 50%; padding: 0; font-size: 1.5em;
-    }
-    .sidebar-logo { justify-content: center; }
-     .user-profile-widget { flex-direction: column; align-items: center; gap: 5px; }
-    .user-profile-widget .btn-logout { margin-top: 5px; }
-}
-@media (max-width: 768px) { /* Mobile */
-    .app-container {
-        grid-template-columns: 1fr; /* Single column */
-        gap: 0;
-    }
-    .left-sidebar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 65px; /* Bottom nav bar height */
-        width: 100%;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-around;
-        padding: 0 10px;
-        border-top: 1px solid var(--glassmorphism-border);
-        border-right: none;
-        z-index: 100;
-    }
-    .left-sidebar .sidebar-logo,
-    .left-sidebar .user-profile-widget .user-avatar-small, /* Hide avatar from bottom bar */
-    .left-sidebar .user-profile-widget .btn-logout /* Hide logout from bottom bar */
-     { display: none; }
-
-    .nav-links {
-        display: flex;
-        justify-content: space-around;
-        flex-grow: 1;
-        margin: 0;
-    }
-    .nav-links li { margin-bottom: 0; }
-    .nav-link { padding: 10px; flex-direction: column; font-size: 0.8em; gap: 2px; }
-    .nav-link i { font-size: 1.4em; margin-bottom: 2px; }
-    .nav-link span { display: block !important; } /* Ensure text shows on mobile bottom bar */
-
-    .left-sidebar .btn-post-thread {
-        /* position: fixed;
-        bottom: 80px;
-        right: 20px; */
-        /* Or integrate into the bottom bar if space allows */
-        /* For simplicity now, let's hide the big one and rely on inline post */
-        display: none; /* Can be re-added as a floating action button if desired */
-    }
-     .user-profile-widget { display: none; /* Typically accessed via a dedicated profile link on mobile */}
-
-    .main-feed {
-        height: calc(100vh - 65px); /* Adjust for bottom nav */
-        padding-bottom: 80px; /* Space for bottom nav overlap */
-        border-left: none; border-right: none;
-    }
-    .feed-header {
-        margin-left: -20px; margin-right: -20px; /* Full width on mobile */
-    }
-}
-/* ... (Keep all existing CSS from the previous version) ... */
-
-/* --- Thread Item Additions --- */
-.thread-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-    position: relative; /* For delete button positioning */
-}
-
-.btn-delete-thread { /* NEW */
-    background: none;
-    border: none;
-    color: var(--text-medium);
-    font-size: 0.9em;
+.poll-option {
+    background-color: transparent;
+    border: 1px solid var(--primary-neon);
+    color: var(--primary-neon);
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 20px; /* Pill shape */
     cursor: pointer;
-    padding: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    position: relative;
+    overflow: hidden; /* Important for fill effect */
+    font-size: 0.9em;
+    text-align: left; /* Ensure text aligns left */
+    display: flex; /* Use flex for better alignment of text and percentage */
+    justify-content: space-between; /* Pushes percentage to the right */
+    align-items: center;
+}
+/* Hover effect only if the user hasn't voted in this poll at all */
+.poll-option:not(.already-voted-poll):hover {
+    background-color: rgba(0, 240, 255, 0.1);
+}
+.poll-option.already-voted-poll { /* Class if current user has voted anywhere in this poll */
+    cursor: default; /* No pointer if already voted */
+}
+.poll-option.voted-by-user { /* Specific class if current user voted for THIS option */
+    border-color: var(--secondary-neon) !important;
+    color: var(--secondary-neon) !important;
+}
+.poll-option-text {
+    position: relative; /* Ensure it's above the fill */
+    z-index: 2;
+    /* flex-grow: 1; Allows text to take available space if needed */
+}
+.poll-option-percent {
+    font-weight: bold;
+    /* margin-left: auto; Pushes to the right */
+    position: relative; /* Ensure it's above the fill */
+    z-index: 2;
+    white-space: nowrap; /* Prevent percentage from wrapping */
+    padding-left: 10px; /* Space between text and percentage */
+}
+.poll-option-fill {
     position: absolute;
-    top: 0px; /* Adjust as needed */
-    right: 0px; /* Adjust as needed */
-    opacity: 0.7;
-    transition: color 0.2s ease, opacity 0.2s ease;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--primary-neon);
+    opacity: 0.2; /* Base opacity for voted polls */
+    /* border-radius: 20px; Match parent rounding - removed as it can clip strangely with flex */
+    transition: width 0.5s ease-in-out;
+    z-index: 1; /* Behind text and percentage */
 }
-.btn-delete-thread:hover {
-    color: var(--error-color);
-    opacity: 1;
+.poll-option.voted-by-user .poll-option-fill {
+    background-color: var(--secondary-neon); /* Fill color matches border for user's vote */
+    opacity: 0.3;
 }
-.btn-delete-thread i { pointer-events: none; /* So click hits button */}
-
-.thread-image { /* Add cursor pointer */
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: var(--border-radius-small);
-    margin-bottom: 10px;
-    border: 1px solid var(--input-border);
-    cursor: pointer; /* NEW */
-    transition: opacity 0.3s ease;
-}
-.thread-image:hover {
-    opacity: 0.85;
+.poll-total-votes {
+    font-size: 0.8em;
+    color: var(--text-medium);
+    margin-top: 10px;
+    text-align: right;
 }
 
 
-/* --- Comments Section - NEW --- */
+/* --- Comments Section --- */
 .thread-comments-section {
     margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid var(--input-border);
+    padding-top: 10px;
+    /* No border, as it's part of the tweet flow */
 }
+.toggle-comments-btn { /* This class is not explicitly used in JS for toggling, but can be styled if added */
+    background: none; border: none; color: var(--twitter-blue);
+    font-size: 0.9em; cursor: pointer; padding: 5px 0; margin-bottom: 10px;
+}
+.toggle-comments-btn:hover { text-decoration: underline; }
 
 .add-comment-form {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
+    padding: 10px 0;
+    border-top: 1px solid var(--glassmorphism-border);
+    margin-top: 10px; /* Only for the first form under a thread */
 }
-.add-comment-form textarea {
+.thread-comments-section > .add-comment-form:first-child { /* No top border/margin for the main reply form */
+    border-top: none;
+    margin-top: 0;
+}
+.add-comment-form .comment-user-avatar {
+    width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+    flex-shrink: 0; /* Prevent avatar from shrinking */
+}
+.add-comment-input-wrapper {
     flex-grow: 1;
-    min-height: 40px;
-    max-height: 100px; /* Prevent excessive height */
+    display: flex;
+    flex-direction: column;
+}
+.add-comment-input-wrapper textarea {
+    flex-grow: 1; min-height: 40px; max-height: 120px;
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
     border-radius: var(--border-radius-small);
-    padding: 8px 10px;
-    color: var(--text-light);
-    font-family: var(--font-primary);
-    font-size: 0.9em;
-    resize: vertical;
+    padding: 8px 12px; color: var(--text-light);
+    font-family: var(--font-primary); font-size: 0.9em; resize: vertical;
 }
-.add-comment-form textarea:focus {
-    outline: none;
-    border-color: var(--input-focus-border);
+.add-comment-input-wrapper textarea:focus {
+    outline: none; border-color: var(--input-focus-border);
     box-shadow: 0 0 5px var(--accent-glow);
 }
-.add-comment-form button {
-    padding: 8px 15px;
-    font-size: 0.9em;
-    height: fit-content; /* Align with textarea if it's single line initially */
+.comment-image-preview-container { margin-top: 8px; position: relative; display: inline-block;}
+.comment-image-preview-container img { max-height: 100px; border-radius: var(--border-radius-small); display: block;}
+.comment-image-preview-container .remove-image-btn { /* Re-use existing remove button style with adjustments */
+    top: 5px; right: 5px; width: 20px; height: 20px; font-size: 12px; line-height: 20px;
 }
 
-.comments-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.comment-item {
-    display: flex;
-    gap: 10px;
-    font-size: 0.9em;
-}
-.comment-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid var(--secondary-neon);
-    margin-top: 2px;
-}
-.comment-content-wrapper {
-    background-color: rgba(0,0,0,0.15);
-    padding: 8px 12px;
-    border-radius: var(--border-radius-small);
-    flex-grow: 1;
-}
-.comment-header {
+.comment-form-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
+    margin-top: 8px;
 }
-.comment-user-name {
-    font-weight: 600;
-    color: var(--text-heading);
-    font-size: 0.95em;
+.comment-form-actions .action-btn { font-size: 1em; padding: 6px; }
+.comment-form-actions .btn-primary { font-size: 0.85em; padding: 6px 12px; border-radius: 15px;}
+
+
+.comments-list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 0; /* No gap, border separates */
 }
-.comment-timestamp {
-    color: var(--text-medium);
-    font-size: 0.75em;
+.comment-item {
+    display: flex; gap: 10px; font-size: 0.9em;
+    padding: 12px 0; /* Increased padding for better spacing */
+    border-top: 1px solid var(--input-border);
 }
-.comment-text {
-    line-height: 1.5;
-    white-space: pre-wrap;
-    word-break: break-word;
+.comments-list > .comment-item:first-child { /* No top border for the very first comment in a list */
+     border-top: none;
 }
-.btn-delete-comment {
-    background: none;
-    border: none;
-    color: var(--text-medium);
-    font-size: 0.8em;
-    cursor: pointer;
-    padding: 2px 4px;
-    margin-left: 5px;
-    opacity: 0.6;
-}
-.btn-delete-comment:hover {
-    color: var(--error-color);
-    opacity: 1;
+.nested-replies-list > .comment-item:first-child { /* No top border for first nested reply */
+    border-top: none;
+    padding-top: 8px; /* Slightly less top padding for first nested */
 }
 
-/* --- Image Full View Modal - NEW --- */
-.image-modal { /* Extends .modal */
-    background-color: rgba(10, 2, 31, 0.9); /* Even darker for focus */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+
+.comment-avatar { /* Used by both top-level and nested */
+    width: 36px; height: 36px; border-radius: 50%;
+    object-fit: cover; margin-top: 2px; flex-shrink: 0;
 }
-.image-modal-content {
-    margin: auto;
-    display: block;
-    max-width: 90%;
-    max-height: 85vh;
-    border-radius: var(--border-radius-small);
-    box-shadow: 0 0 40px var(--primary-neon), 0 0 60px rgba(0,0,0,0.7);
+.comment-body { flex-grow: 1; }
+.comment-header {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 3px;
+    position: relative; /* For delete button positioning */
 }
-.image-modal-close { /* Specific styling for this close button if needed */
-    position: absolute;
-    top: 20px;
-    right: 35px;
-    color: #f1f1f1 !important; /* Override generic .close-button if needed */
-    font-size: 40px !important;
-    font-weight: bold;
-    transition: 0.3s;
-    z-index: 1002; /* Above image */
-}
-.image-modal-close:hover,
-.image-modal-close:focus {
-    color: var(--secondary-neon) !important;
+.comment-user-name { /* Shared by comment and thread user info */
+    font-weight: 600; color: var(--text-heading); font-size: 0.95em;
     text-decoration: none;
-    cursor: pointer;
-    transform: scale(1.1);
 }
-.image-modal-caption { /* Optional caption */
-    margin: 15px auto 0;
-    display: block;
-    width: 80%;
-    max-width: 700px;
-    text-align: center;
+.comment-user-name:hover { text-decoration: underline; }
+.comment-callsign, .comment-timestamp-separator {
+    color: var(--text-medium); font-size: 0.9em;
+}
+.comment-timestamp { color: var(--text-medium); font-size: 0.9em; }
+
+.comment-text {
+    line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+    color: var(--text-light); font-size: 0.95em;
+}
+.comment-image {
+    max-width: 100%; max-height: 250px; border-radius: var(--border-radius-main);
+    margin-top: 8px; border: 1px solid var(--glassmorphism-border); cursor: pointer;
+    display: block; /* Ensure it takes block space */
+}
+.btn-delete-comment {
+    background: none; border: none; color: var(--text-medium);
+    font-size: 0.8em; cursor: pointer; padding: 2px 4px;
+    opacity: 0.7;
+    position: absolute; /* Position relative to .comment-header */
+    top: 0;
+    right: 0;
+}
+.btn-delete-comment:hover { color: var(--error-color); opacity: 1; }
+.btn-delete-comment i { pointer-events: none; }
+
+/* Styles for comment actions (like reply to comment) */
+.comment-item-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 15px;
+}
+.comment-item-actions .action-btn {
+    font-size: 0.8em; /* Smaller for comment actions */
     color: var(--text-medium);
-    padding: 10px 0;
+    padding: 4px 6px; /* Smaller padding */
+}
+.comment-item-actions .action-btn i {
+    font-size: 1.1em; /* Adjust icon size within */
+}
+.comment-item-actions .action-btn .nested-reply-count {
+    font-size: 0.9em; /* Ensure count is readable */
+}
+.comment-item-actions .action-btn:hover {
+    color: var(--twitter-blue);
+    background-color: rgba(29, 161, 242, 0.1);
+}
+
+/* Nested Replies Section */
+.nested-replies-list { /* The UL for nested replies */
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0 0; /* Margin above the list of nested replies */
+}
+.nested-reply-form-container { /* DIV that will hold the nested reply form */
+    margin-left: 46px; /* Indent based on avatar width of parent + gap */
+    padding-left: 10px;
+    margin-top: 8px;
+}
+.nested-reply-form { /* The actual form, similar to .add-comment-form */
+    display: flex;
+    gap: 8px; /* Slightly smaller gap */
+    padding: 8px 0; /* Less padding */
+    border-top: 1px dashed var(--input-border); /* Lighter separator */
+}
+.nested-reply-form .add-comment-input-wrapper textarea { /* Textarea within nested form */
+    min-height: 30px;
+    font-size: 0.85em;
+    padding: 6px 8px;
+}
+.nested-reply-form .comment-form-actions .btn-primary {
+    font-size: 0.8em;
+    padding: 5px 10px;
+}
+.nested-reply-form .comment-form-actions .action-btn {
     font-size: 0.9em;
+}
+
+.comment-item.nested-comment-item { /* A nested reply LI */
+    padding-left: 46px; /* Indent based on parent avatar width + gap */
+    border-left: 2px solid var(--input-border); /* Thread line for visual connection */
+    margin-left: 10px; /* Overall margin for the indented block */
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+.nested-comment-item .comment-avatar {
+    width: 30px; /* Smaller avatar for nested replies */
+    height: 30px;
+}
+.nested-comment-item .comment-header,
+.nested-comment-item .comment-text,
+.nested-comment-item .comment-item-actions {
+    font-size: 0.95em; /* Slightly smaller fonts for nested content */
+}
+
+
+/* Spinner for loading nested replies */
+.nested-replies-list .spinner-small {
+    margin: 10px 0 10px 20px; /* Adjust margin for better placement */
+}
+
+
+/* --- Image Full View Modal --- */
+.image-modal { background-color: rgba(10, 2, 31, 0.92); backdrop-filter: blur(10px); }
+.image-modal-content {
+    margin: auto; display: block; max-width: 90%; max-height: 85vh;
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 0 35px var(--primary-neon), 0 0 50px rgba(0,0,0,0.6);
+}
+.image-modal-close {
+    position: absolute; top: 15px; right: 25px; color: #f1f1f1 !important;
+    font-size: 35px !important; font-weight: bold; transition: 0.3s; z-index: 1002;
+}
+.image-modal-close:hover, .image-modal-close:focus {
+    color: var(--secondary-neon) !important; text-decoration: none;
+    cursor: pointer; transform: scale(1.1);
+}
+.image-modal-caption {
+    margin: 12px auto 0; display: block; width: 80%; max-width: 700px;
+    text-align: center; color: var(--text-medium); padding: 8px 0; font-size: 0.9em;
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1200px) {
+    .app-container { grid-template-columns: 260px 1fr 300px; }
+}
+@media (max-width: 992px) { /* Tablet */
+    .app-container { grid-template-columns: 70px 1fr; }
+    .right-sidebar { display: none; }
+    .left-sidebar .nav-link span, .left-sidebar .sidebar-logo span,
+    .left-sidebar .user-info-small,
+    .left-sidebar .btn-post-thread span:not([class*="fa-"]) { display: none; }
+    .left-sidebar .nav-link i { margin-right: 0; }
+    .left-sidebar .btn-post-thread {
+        width: 50px; height: 50px; border-radius: 50%; padding: 0; font-size: 1.5em;
+    }
+    .sidebar-logo { justify-content: center; }
+    .user-profile-widget { padding: 10px 0; justify-content: center; }
+    .user-profile-widget .btn-logout { display: none; } /* Usually logout is in a menu */
+    .main-feed { border-left: none; }
+}
+@media (max-width: 768px) { /* Mobile */
+    .app-container { grid-template-columns: 1fr; gap: 0; }
+    .left-sidebar {
+        position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+        width: 100%; flex-direction: row; align-items: center;
+        justify-content: space-around; padding: 0 5px;
+        border-top: 1px solid var(--glassmorphism-border); border-right: none;
+        z-index: 100;
+    }
+    .left-sidebar .sidebar-logo, .left-sidebar .user-profile-widget,
+    .left-sidebar .btn-post-thread { display: none; } /* Hide these from bottom bar */
+
+    .nav-links { display: flex; justify-content: space-around; flex-grow: 1; margin: 0; }
+    .nav-links li { margin-bottom: 0; flex-grow: 1; }
+    .nav-link {
+        padding: 8px 5px; flex-direction: column; font-size: 0.7em; gap: 2px;
+        justify-content: center; border-radius: 8px; /* Less rounding for small items */
+    }
+    .nav-link i { font-size: 1.4em; margin-bottom: 1px; }
+    .nav-link span { display: block !important; }
+
+    .main-feed {
+        height: calc(100vh - 60px); padding-bottom: 70px;
+        border-left: none; border-right: none;
+    }
+    .feed-header { margin-left: 0; margin-right: 0; border-radius: 0;}
+    .create-post-inline, .thread-item { padding: 12px 15px; }
+    .thread-avatar { width: 40px; height: 40px; }
+    .modal-content { margin: 10px; padding: 15px; max-width: calc(100% - 20px);}
+    .modal-actions { flex-direction: column; gap: 10px; align-items: stretch; }
+    .modal-actions > div { justify-content: center; }
+    .modal-actions .btn-primary { width: 100%; }
+
+    .comment-item.nested-comment-item {
+        margin-left: 5px; /* Reduce left margin on mobile */
+        padding-left: 25px; /* Reduce indent for nested replies on mobile */
+    }
+    .nested-reply-form-container {
+        margin-left: 25px; /* Reduce indent for nested reply form on mobile */
+    }
+}
+
+.spinner-small { /* For suggestion list and loading replies */
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border-left-color: var(--primary-neon);
+    animation: spin 0.8s ease infinite;
+    margin: 5px auto;
+}
+.comments-list > li > .spinner-small,
+.nested-replies-list > li > .spinner-small { /* Center spinner if it's the only child of li */
+    display: block;
+    margin: 10px auto;
 }

@@ -23,12 +23,12 @@
             </div>
             <ul class="nav-links">
                 <li><a href="#" class="nav-link active"><i class="fas fa-home-lg-alt"></i><span>Home Base</span></a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-compass"></i><span>Explore Nebula</span></a></li>
+                <li><a href="#" class="nav-link"><i class="fas fa-hashtag"></i><span>Explore Nebula</span></a></li>
                 <li><a href="#" class="nav-link"><i class="fas fa-bell"></i><span>Alerts</span></a></li>
                 <li><a href="#" class="nav-link"><i class="fas fa-user-astronaut"></i><span>My Profile</span></a></li>
                 <li><a href="#" class="nav-link"><i class="fas fa-cog"></i><span>Settings</span></a></li>
             </ul>
-            <button class="btn-post-thread" id="open-post-modal-btn"><i class="fas fa-plus-circle"></i> Transmit Query</button>
+            <button class="btn-post-thread" id="open-post-modal-btn"><i class="fas fa-feather-alt"></i> Transmit Query</button>
             <div class="user-profile-widget">
                 <img src="placeholder-avatar.png" alt="User Avatar" id="sidebar-user-avatar" class="user-avatar-small">
                 <div class="user-info-small">
@@ -42,18 +42,28 @@
         <main class="main-feed">
             <header class="feed-header">
                 <h2>Home Base Feed</h2>
-            </header>
+                </header>
 
             <div class="create-post-inline">
                 <textarea id="inline-post-textarea" placeholder="What's on your mind, Explorer? Transmit a query..."></textarea>
-                <div class="inline-post-actions">
-                    <input type="file" id="inline-post-image-upload" accept="image/*" style="display: none;">
-                    <button id="inline-attach-image-btn" class="action-btn" title="Attach Image"><i class="fas fa-photo-video"></i></button>
-                    <button id="inline-submit-post-btn" class="btn-primary">Transmit</button>
-                </div>
-                 <div id="inline-image-preview-container" class="image-preview-container" style="display:none;">
+                <div id="inline-image-preview-container" class="image-preview-container" style="display:none;">
                     <img id="inline-image-preview" src="#" alt="Image Preview"/>
                     <button id="inline-remove-image-btn" class="remove-image-btn" title="Remove Image">&times;</button>
+                </div>
+                <div id="inline-poll-creation-area" class="poll-creation-area" style="display:none;">
+                    <h4>Create Poll</h4>
+                    <div id="inline-poll-options-container">
+                        <input type="text" class="poll-option-input" placeholder="Poll Option 1 (Required)">
+                        <input type="text" class="poll-option-input" placeholder="Poll Option 2 (Required)">
+                        <input type="text" class="poll-option-input" placeholder="Poll Option 3">
+                        <input type="text" class="poll-option-input" placeholder="Poll Option 4">
+                    </div>
+                </div>
+                <div class="inline-post-actions">
+                    <input type="file" id="inline-post-image-upload" accept="image/*" style="display: none;">
+                    <button id="inline-attach-image-btn" class="action-btn" title="Attach Image"><i class="fas fa-image"></i></button>
+                    <button id="inline-add-poll-btn" class="action-btn" title="Add Poll"><i class="fas fa-chart-bar"></i></button>
+                    <button id="inline-submit-post-btn" class="btn-primary">Transmit</button>
                 </div>
             </div>
 
@@ -67,15 +77,15 @@
 
         <aside class="right-sidebar">
             <div class="sidebar-section">
-                <h3><i class="fas fa-users"></i> Crew Suggestions</h3>
+                <h3><i class="fas fa-user-plus"></i> Crew Suggestions</h3>
                 <ul class="suggestion-list" id="crew-suggestions-list">
                     <li>Loading...</li>
                 </ul>
             </div>
             <div class="sidebar-section">
-                <h3><i class="fas fa-chart-line"></i> Trending Signals</h3>
+                <h3><i class="fas fa-fire"></i> Trending Signals</h3>
                 <ul class="trending-list" id="trending-signals-list">
-                    <li>Loading...</li>
+                    <li>Scanning for strong signals...</li>
                 </ul>
             </div>
             <footer class="sidebar-footer">
@@ -88,16 +98,30 @@
     <div id="post-thread-modal" class="modal">
         <div class="modal-content">
             <button class="close-button" id="close-post-modal-btn" title="Close">&times;</button>
-            <h2><i class="fas fa-broadcast-tower"></i> New Transmission</h2>
+            <h2><i class="fas fa-satellite-dish"></i> New Transmission</h2>
             <form id="post-thread-form">
                 <textarea id="modal-post-content" placeholder="Compose your query or share your discovery..." required></textarea>
                 <div id="modal-image-preview-container" class="image-preview-container" style="display:none;">
                     <img id="modal-image-preview" src="#" alt="Image Preview"/>
                     <button id="modal-remove-image-btn" class="remove-image-btn" title="Remove Image">&times;</button>
                 </div>
+
+                <div id="modal-poll-creation-area" class="poll-creation-area" style="display:none;">
+                    <h4>Create Poll</h4>
+                    <div id="modal-poll-options-container">
+                        <input type="text" class="poll-option-input" name="pollOption1" placeholder="Poll Option 1 (Required)">
+                        <input type="text" class="poll-option-input" name="pollOption2" placeholder="Poll Option 2 (Required)">
+                        <input type="text" class="poll-option-input" name="pollOption3" placeholder="Poll Option 3">
+                        <input type="text" class="poll-option-input" name="pollOption4" placeholder="Poll Option 4">
+                    </div>
+                </div>
+
                 <div class="modal-actions">
-                    <input type="file" id="modal-post-image" accept="image/*" style="display:none;">
-                    <button type="button" id="modal-attach-image-btn" class="action-btn" title="Attach Holo-Image"><i class="fas fa-camera-retro"></i> Attach Holo-Image</button>
+                    <div>
+                        <input type="file" id="modal-post-image" accept="image/*" style="display:none;">
+                        <button type="button" id="modal-attach-image-btn" class="action-btn" title="Attach Holo-Image"><i class="fas fa-image"></i></button>
+                        <button type="button" id="modal-add-poll-btn" class="action-btn" title="Add Poll"><i class="fas fa-chart-bar"></i></button>
+                    </div>
                     <button type="submit" class="btn btn-primary">Transmit Signal</button>
                 </div>
             </form>
@@ -109,7 +133,6 @@
         <img class="image-modal-content" id="full-view-image" alt="Full view image">
         <div id="image-modal-caption" class="image-modal-caption"></div>
     </div>
-
 
     <script src="app.js"></script>
 </body>
