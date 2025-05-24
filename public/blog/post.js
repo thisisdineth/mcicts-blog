@@ -1,13 +1,30 @@
 // post.js
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("[DEBUG] DOMContentLoaded fired. Initializing script.");
+
     // Firebase services are initialized in firebase-config.js and should be globally available
-    // const auth = firebase.auth();
-    // const database = firebase.database();
+    // const auth = firebase.auth(); // Assuming global
+    // const database = firebase.database(); // Assuming global
+    // Check if Firebase services are available from firebase-config.js
+    if (typeof firebase === 'undefined' || !firebase.app) {
+        console.error("[DEBUG] Firebase App is not initialized! Check firebase-config.js and SDK loading order.");
+        showErrorState("Critical Firebase App error. Cannot load transmission.");
+        return;
+    }
+    if (typeof auth === 'undefined') console.error("[DEBUG] Firebase Auth is not available from firebase-config.js!");
+    if (typeof database === 'undefined') console.error("[DEBUG] Firebase Database is not available from firebase-config.js!");
+
 
     // --- DOM Element Selection ---
     const loadingOverlay = document.getElementById('loading-overlay');
     const postDetailContainer = document.getElementById('post-detail-container');
     const postNotFoundDiv = document.getElementById('post-not-found');
+
+    // Debug DOM selections
+    // console.log("[DEBUG] loadingOverlay:", loadingOverlay);
+    // console.log("[DEBUG] postDetailContainer:", postDetailContainer);
+    // console.log("[DEBUG] postNotFoundDiv:", postNotFoundDiv);
+
 
     // Navbar elements
     const userProfilePictureNav = document.getElementById('user-profile-picture-nav');
@@ -15,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const userNameNav = document.getElementById('user-name-nav');
     const signOutBtnNav = document.getElementById('sign-out-btn-nav');
     const navCreatePostBtn = document.getElementById('nav-create-post-btn');
-    const defaultProfilePic = '../images/default-avatar.png'; // Ensure this path is correct
+    const defaultProfilePic = '../images/default-avatar.png';
 
     // Post detail elements
     const postTitleMain = document.getElementById('post-title-main');
@@ -53,34 +70,49 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Initialization ---
     const urlParams = new URLSearchParams(window.location.search);
     currentPostId = urlParams.get('id');
+    console.log("[DEBUG] Extracted Post ID from URL:", currentPostId);
 
     // Firebase Auth State Change Listener
-    auth.onAuthStateChanged(user => {
-        currentUser = user;
-        updateNavbarUserInterface(user); // Update navbar based on login state
-        
-        if (user) {
-            if (addCommentFormContainer) addCommentFormContainer.style.display = 'block';
-            if (commentLoginPrompt) commentLoginPrompt.style.display = 'none';
-            if (navCreatePostBtn) navCreatePostBtn.style.display = 'inline-flex';
-        } else {
-            if (addCommentFormContainer) addCommentFormContainer.style.display = 'none';
-            if (commentLoginPrompt) commentLoginPrompt.style.display = 'block';
-            if (navCreatePostBtn) navCreatePostBtn.style.display = 'none';
-        }
+    if (typeof auth !== 'undefined') { // Check if auth is defined
+        auth.onAuthStateChanged(user => {
+            console.log("[DEBUG] auth.onAuthStateChanged fired. User:", user ? user.uid : "No user");
+            currentUser = user;
+            updateNavbarUserInterface(user);
+            
+            if (user) {
+                if (addCommentFormContainer) addCommentFormContainer.style.display = 'block';
+                if (commentLoginPrompt) commentLoginPrompt.style.display = 'none';
+                if (navCreatePostBtn) navCreatePostBtn.style.display = 'inline-flex';
+            } else {
+                if (addCommentFormContainer) addCommentFormContainer.style.display = 'none';
+                if (commentLoginPrompt) commentLoginPrompt.style.display = 'block';
+                if (navCreatePostBtn) navCreatePostBtn.style.display = 'none';
+            }
 
-        if (currentPostId) {
-            fetchPostDetails(currentPostId);
-            fetchComments(currentPostId);
-        } else {
-            showErrorState("No transmission ID specified in the URL.");
-        }
-        setupNavbarEventListeners(); // Setup listeners after auth state is known
-    });
+            if (currentPostId) {
+                console.log("[DEBUG] Valid Post ID found, attempting to fetch details and comments.");
+                fetchPostDetails(currentPostId);
+                fetchComments(currentPostId);
+            } else {
+                console.log("[DEBUG] No Post ID in URL or Post ID is invalid.");
+                showErrorState("No transmission ID specified in the URL.");
+            }
+            setupNavbarEventListeners();
+        });
+    } else {
+        console.error("[DEBUG] Firebase Auth service not available. Cannot proceed with auth-dependent operations.");
+        showErrorState("Authentication service error. Cannot load transmission.");
+    }
+
 
     // --- Navbar Functions ---
     function updateNavbarUserInterface(user) {
+        // ... (same as your provided JS, ensure elements exist before accessing them) ...
         if (user && userProfilePictureNav && userNameNav) {
+            if (typeof database === 'undefined') {
+                 console.error("[DEBUG] Database service not available for updateNavbarUserInterface");
+                 return;
+            }
             const userRef = database.ref('users/' + user.uid);
             userRef.once('value').then(snapshot => {
                 if (snapshot.exists()) {
@@ -92,31 +124,31 @@ document.addEventListener('DOMContentLoaded', function () {
                     userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.displayName || 'User'}`;
                 }
             }).catch(error => {
-                console.error("Error fetching user profile for navbar:", error);
-                if (userProfilePictureNav) userProfilePictureNav.src = defaultProfilePic; // Check if element exists
-                if (userNameNav) userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user ? (user.displayName || 'User') : 'Guest'}`; // Check
+                console.error("[DEBUG] Error fetching user profile for navbar:", error);
+                if (userProfilePictureNav) userProfilePictureNav.src = defaultProfilePic;
+                if (userNameNav) userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user ? (user.displayName || 'User') : 'Guest'}`;
             });
-        } else if (userProfilePictureNav && userNameNav) { // No user logged in
+        } else if (userProfilePictureNav && userNameNav) {
             userProfilePictureNav.src = defaultProfilePic;
             userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> Guest`;
         }
     }
 
     function setupNavbarEventListeners() {
+        // ... (same as your provided JS) ...
         if (userProfilePictureNav && profileDropdown) {
             userProfilePictureNav.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent window click from closing it immediately
+                e.stopPropagation();
                 profileDropdown.classList.toggle('show');
             });
         }
         if (signOutBtnNav) {
             signOutBtnNav.addEventListener('click', () => {
-                auth.signOut().then(() => {
-                    // UI updates are handled by onAuthStateChanged
-                }).catch(error => console.error('Sign out error:', error));
+                if (typeof auth !== 'undefined') {
+                    auth.signOut().catch(error => console.error('[DEBUG] Sign out error:', error));
+                }
             });
         }
-        // Close dropdown if clicked outside
         window.addEventListener('click', function(e) {
             if (profileDropdown && profileDropdown.classList.contains('show') &&
                 userProfilePictureNav && !userProfilePictureNav.contains(e.target) && 
@@ -128,14 +160,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Post Fetching and Display ---
     async function fetchPostDetails(postId) {
+        console.log("[DEBUG] fetchPostDetails called for postId:", postId);
+        if (typeof database === 'undefined') {
+            console.error("[DEBUG] Database service not available for fetchPostDetails");
+            showErrorState("Database service error. Cannot load transmission.");
+            return;
+        }
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
         try {
             const postRef = database.ref('posts/' + postId);
+            console.log("[DEBUG] Attempting to fetch from Firebase path:", postRef.toString());
             const snapshot = await postRef.once('value');
+            console.log("[DEBUG] Firebase snapshot received. Exists?", snapshot.exists());
 
             if (snapshot.exists()) {
                 currentPostData = snapshot.val();
+                console.log("[DEBUG] Post data fetched:", currentPostData);
                 document.title = (currentPostData.title || "Post") + " | Cosmic Chronicles";
 
                 if (postTitleMain) postTitleMain.textContent = currentPostData.title;
@@ -144,19 +185,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 if (postReadTimeMain && currentPostData.content) {
                     const wordsPerMinute = 200;
-                    const noHtmlContent = currentPostData.content.replace(/<[^>]+>/g, '');
-                    const wordCount = noHtmlContent.split(/\s+/).length;
+                    const noHtmlContent = String(currentPostData.content || '').replace(/<[^>]+>/g, '');
+                    const wordCount = noHtmlContent.split(/\s+/).filter(Boolean).length;
                     const readTime = Math.ceil(wordCount / wordsPerMinute);
                     postReadTimeMain.textContent = `~ ${readTime} min read`;
+                } else if (postReadTimeMain) {
+                    postReadTimeMain.textContent = `~ 0 min read`;
                 }
 
-                if (postContentMain) postContentMain.innerHTML = currentPostData.content;
+
+                if (postContentMain) {
+                    console.log("[DEBUG] Setting post content HTML.");
+                    postContentMain.innerHTML = currentPostData.content || "<p><em>Content is unavailable for this transmission.</em></p>";
+                } else {
+                    console.warn("[DEBUG] postContentMain element not found.");
+                }
+
 
                 if (featuredImageContainer) {
                     if (currentPostData.featuredImageUrl) {
                         featuredImageContainer.style.backgroundImage = `url(${currentPostData.featuredImageUrl})`;
                     } else {
-                        featuredImageContainer.style.backgroundImage = `url('../images/default-space-banner.jpg')`; // Ensure this default banner exists
+                        featuredImageContainer.style.backgroundImage = `url('../images/default-space-banner.jpg')`;
                         featuredImageContainer.style.backgroundColor = `var(--bg-dark-space)`;
                     }
                 }
@@ -164,15 +214,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (currentPostData.authorId) {
                     fetchAuthorDetails(currentPostData.authorId);
                 } else {
+                    console.warn("[DEBUG] Post data missing authorId.");
                     if(postAuthorNameMain) postAuthorNameMain.textContent = 'Unknown Author';
                     if(postAuthorAvatarMain) postAuthorAvatarMain.src = defaultProfilePic;
-                     if (authorBioName) authorBioName.textContent = 'Unknown Author';
+                    if (authorBioName) authorBioName.textContent = 'Unknown Author';
                     if (authorBioAvatar) authorBioAvatar.src = defaultProfilePic;
                     if (authorBioText) authorBioText.textContent = 'Author information is unavailable.';
                 }
 
-                // Setup Edit/Delete buttons
-                if (currentUser && currentUser.uid === currentPostData.authorId) {
+                if (currentUser && currentPostData && currentUser.uid === currentPostData.authorId) {
                     if (editPostBtn) {
                         editPostBtn.style.display = 'inline-flex';
                         editPostBtn.onclick = () => {
@@ -188,40 +238,47 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (deletePostBtn) deletePostBtn.style.display = 'none';
                 }
 
-                if (postDetailContainer) postDetailContainer.style.display = 'block'; // 'article' in HTML
+                if (postDetailContainer) postDetailContainer.style.display = 'block';
                 if (postNotFoundDiv) postNotFoundDiv.style.display = 'none';
+                console.log("[DEBUG] Post details displayed.");
 
             } else {
-                showErrorState(`Transmission signal lost (ID: ${postId}). This post could not be found.`);
+                console.log(`[DEBUG] Snapshot does not exist for postId: ${postId}. Path: ${postRef.toString()}`);
+                showErrorState(`Transmission signal lost (ID: ${postId}). This post could not be found or you may not have permission to view it.`);
             }
         } catch (error) {
-            console.error("Error fetching post details:", error);
-            showErrorState("Error receiving transmission. Please try again later.");
+            console.error("[DEBUG] Error fetching post details:", error);
+            showErrorState("Error receiving transmission. Please check console for details.");
         } finally {
             if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     }
 
     async function fetchAuthorDetails(authorId) {
+        console.log("[DEBUG] fetchAuthorDetails called for authorId:", authorId);
+        if (typeof database === 'undefined') {
+            console.error("[DEBUG] Database service not available for fetchAuthorDetails");
+            return;
+        }
         try {
-            const authorSnapshot = await database.ref('users/' + authorId).once('value');
+            const authorRef = database.ref('users/' + authorId);
+            console.log("[DEBUG] Fetching author from path:", authorRef.toString());
+            const authorSnapshot = await authorRef.once('value');
             if (authorSnapshot.exists()) {
                 const authorData = authorSnapshot.val();
+                console.log("[DEBUG] Author data fetched:", authorData);
                 if (postAuthorNameMain) postAuthorNameMain.textContent = authorData.name || 'Unknown Explorer';
                 if (postAuthorAvatarMain) postAuthorAvatarMain.src = authorData.profilePictureURL || defaultProfilePic;
                 if (authorBioName) authorBioName.textContent = authorData.name || 'Unknown Explorer';
                 if (authorBioAvatar) authorBioAvatar.src = authorData.profilePictureURL || defaultProfilePic;
                 if (authorBioText) authorBioText.textContent = authorData.bio || 'A dedicated explorer of the cosmos, always seeking the next great discovery.';
             } else {
+                console.log("[DEBUG] Author snapshot does not exist for authorId:", authorId);
                 if (postAuthorNameMain) postAuthorNameMain.textContent = 'Author Not Found';
                 if (authorBioText) authorBioText.textContent = 'Author information is unavailable.';
-                if (postAuthorAvatarMain) postAuthorAvatarMain.src = defaultProfilePic;
-                if (authorBioAvatar) authorBioAvatar.src = defaultProfilePic;
-                if (authorBioName) authorBioName.textContent = 'Author Not Found';
-
             }
         } catch (error) {
-            console.error("Error fetching author details for post:", error);
+            console.error("[DEBUG] Error fetching author details:", error);
             if (postAuthorNameMain) postAuthorNameMain.textContent = 'Error Loading Author';
             if (authorBioText) authorBioText.textContent = 'Could not load author information.';
         }
@@ -229,35 +286,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Post Actions (Edit/Delete) ---
     function confirmDeletePost(postId, postTitle) {
+        // ... (same as your provided JS) ...
         if (window.confirm(`Are you sure you want to PERMANENTLY delete the transmission titled "${postTitle}"? This action cannot be undone.`)) {
             deletePost(postId);
         }
     }
 
     async function deletePost(postId) {
+        // ... (same as your provided JS, add database undefined check) ...
         if (!currentUser || !currentPostData || currentUser.uid !== currentPostData.authorId) {
             alert("You are not authorized to delete this post.");
             return;
         }
+        if (typeof database === 'undefined') {
+            console.error("[DEBUG] Database service not available for deletePost");
+            alert("Database service error. Cannot delete post.");
+            return;
+        }
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
         try {
-            // Note: Deleting images from Firebase Storage associated with the post is more complex.
-            // It requires storing the full storage paths of all images (featured + TinyMCE uploads)
-            // in your database post data, then iterating through them and deleting each.
-            // For simplicity, this example only deletes the database entries.
-            // Example for featured image if you stored its path:
-            // if (currentPostData.featuredImageStoragePath && firebase.storage) { // Check if storage is available
-            //    const imageRef = firebase.storage().ref(currentPostData.featuredImageStoragePath);
-            //    await imageRef.delete().catch(err => console.warn("Could not delete featured image:", err));
-            // }
-
             await database.ref('posts/' + postId).remove();
-            await database.ref('comments/' + postId).remove(); // Also delete all comments for this post
-
+            await database.ref('comments/' + postId).remove();
             alert("Transmission successfully deleted from the HoloNet.");
             window.location.href = '../blog/blog.html';
         } catch (error) {
-            console.error("Error deleting post:", error);
+            console.error("[DEBUG] Error deleting post:", error);
             alert("Failed to delete transmission: " + error.message);
         } finally {
             if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -266,9 +319,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Comments ---
     function fetchComments(postId) {
+        console.log("[DEBUG] fetchComments called for postId:", postId);
+        if (typeof database === 'undefined') {
+            console.error("[DEBUG] Database service not available for fetchComments");
+            if (commentsList) commentsList.innerHTML = '<p class="no-comments-message error">Database service error. Cannot load comments.</p>';
+            return;
+        }
         const commentsRef = database.ref('comments/' + postId).orderByChild('createdAt');
         commentsRef.on('value', snapshot => {
-            if (commentsList) commentsList.innerHTML = ''; // Clear old comments
+            console.log("[DEBUG] Comments snapshot received. Exists?", snapshot.exists());
+            if (commentsList) commentsList.innerHTML = '';
             let count = 0;
             if (snapshot.exists()) {
                 snapshot.forEach(childSnapshot => {
@@ -284,20 +344,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 commentsList.innerHTML = '<p class="no-comments-message">No resonance signals yet. Be the first to discuss!</p>';
             }
         }, error => {
-            console.error("Error fetching comments:", error);
+            console.error("[DEBUG] Error fetching comments:", error);
             if (commentsList) commentsList.innerHTML = '<p class="no-comments-message error">Could not load comments at this time.</p>';
         });
     }
 
     function renderComment(comment) {
+        // ... (same as your provided JS) ...
         if (!commentsList) return;
         const item = document.createElement('div');
         item.classList.add('comment-item');
-        
         const commentDate = comment.createdAt ? 
             new Date(comment.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) :
             'Timestamp unavailable';
-
         item.innerHTML = `
             <img src="${comment.authorProfilePic || defaultProfilePic}" alt="${comment.authorName || 'User'}" class="comment-avatar">
             <div class="comment-content">
@@ -312,10 +371,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (addCommentForm) {
         addCommentForm.addEventListener('submit', async (e) => {
+            // ... (same as your provided JS, add database undefined check) ...
             e.preventDefault();
             if (!currentUser) {
                 alert("Please log in to send a signal (comment).");
                 return;
+            }
+            if (typeof database === 'undefined') {
+                 console.error("[DEBUG] Database service not available for addCommentForm submit");
+                 alert("Database service error. Cannot submit comment.");
+                 return;
             }
             if (!commentTextInput) return;
             const commentText = commentTextInput.value.trim();
@@ -323,13 +388,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert("Signal (comment) cannot be empty.");
                 return;
             }
-
             if (submitCommentBtn) toggleButtonLoading(submitCommentBtn, true);
-
             try {
                 const userProfileSnapshot = await database.ref('users/' + currentUser.uid).once('value');
                 const userProfile = userProfileSnapshot.exists() ? userProfileSnapshot.val() : {};
-
                 const newComment = {
                     text: commentText,
                     authorId: currentUser.uid,
@@ -337,11 +399,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     authorProfilePic: userProfile.profilePictureURL || currentUser.photoURL || defaultProfilePic,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
                 };
-
                 await database.ref('comments/' + currentPostId).push(newComment);
                 commentTextInput.value = ''; 
             } catch (error) {
-                console.error("Error adding comment:", error);
+                console.error("[DEBUG] Error adding comment:", error);
                 alert("Failed to send signal: " + error.message);
             } finally {
                 if (submitCommentBtn) toggleButtonLoading(submitCommentBtn, false);
@@ -351,12 +412,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Helper Functions ---
     function escapeHTML(str) {
+        // ... (same as your provided JS) ...
         const div = document.createElement('div');
         div.appendChild(document.createTextNode(str));
         return div.innerHTML;
     }
 
     function showErrorState(message) {
+        console.log("[DEBUG] showErrorState called with message:", message);
+        // ... (same as your provided JS) ...
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         if (postDetailContainer) postDetailContainer.style.display = 'none';
         if (postNotFoundDiv) {
@@ -372,10 +436,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function toggleButtonLoading(button, isLoading) {
+        // ... (same as your provided JS) ...
         if (!button) return;
         const textSpan = button.querySelector('.btn-text');
         const loaderSpan = button.querySelector('.btn-loader');
-        
         button.disabled = isLoading;
         if (textSpan) textSpan.style.display = isLoading ? 'none' : 'inline-block';
         if (loaderSpan) loaderSpan.style.display = isLoading ? 'inline-block' : 'none';
