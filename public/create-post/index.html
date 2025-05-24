@@ -6,6 +6,7 @@
     <title>Create New Cosmic Transmission</title>
     <link rel="stylesheet" href="create-post.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {/* Ensure you replace with your own TinyMCE API key if this one has restrictions */}
     <script src="https://cdn.tiny.cloud/1/dn6atm2jiqo2o5y2j4czlsxftmcxvlb9e9at5270kjm149uu/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
@@ -16,7 +17,8 @@
             <a href="../blog/blog.html"><i class="fas fa-journal-whills"></i> Cosmic Chronicles</a>
         </div>
         <div class="navbar-actions">
-            <a href="../blog/" class="btn btn-secondary">
+            {/* Corrected path for Cancel button if blog.html is inside blog folder */}
+            <a href="../blog/blog.html" class="btn btn-secondary"> 
                 <i class="fas fa-times-circle"></i> Cancel
             </a>
         </div>
@@ -75,11 +77,13 @@
         <p>&copy; 2342 Cosmic Chronicles Network. Engineering Division.</p>
     </footer>
 
+    {/* Firebase SDKs - Order is important! */}
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
-    <script src="../firebase-config.js"></script> <script src="create-post.js"></script>
+    <script src="../firebase-config.js"></script> {/* Ensure path is correct */}
+    <script src="create-post.js"></script>
 </body>
 </html>
