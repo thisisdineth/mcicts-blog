@@ -2,15 +2,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const auth = firebase.auth();
     const database = firebase.database();
 
+    // --- DOM Elements ---
     const pageLoader = document.getElementById('page-loader');
     const postMainContent = document.getElementById('post-main-content');
 
-    // Hero elements
     const postHeroSection = document.getElementById('post-hero');
     const heroImageContainer = postHeroSection.querySelector('.hero-image-container');
     const postTitleDisplayHero = document.getElementById('post-title-display-hero');
 
-    // Post meta and content elements
     const postAuthorImg = document.getElementById('post-author-img');
     const postAuthorName = document.getElementById('post-author-name');
     const postDate = document.getElementById('post-date');
@@ -18,19 +17,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const postContentDisplay = document.getElementById('post-content-display');
     const errorMessageArea = document.getElementById('error-message-area');
 
-    // Action elements
     const likeButton = document.getElementById('like-button');
     const likeCountSpan = document.getElementById('like-count');
-    const commentButtonLink = document.getElementById('comment-button-link');
     const shareButton = document.getElementById('share-button');
     const shareTooltip = document.getElementById('share-tooltip');
 
-    // Comments section
     const commentLoginPrompt = document.getElementById('comment-login-prompt');
-    const commentFormPlaceholder = document.getElementById('comment-form-placeholder');
+    // const commentFormPlaceholder = document.getElementById('comment-form-placeholder'); // Placeholder, can be enhanced later
 
-
-    // Navbar elements
     const userProfilePictureNav = document.getElementById('user-profile-picture-nav');
     const profileDropdown = document.getElementById('profile-dropdown');
     const userNameNav = document.getElementById('user-name-nav');
@@ -40,139 +34,93 @@ document.addEventListener('DOMContentLoaded', function () {
     const dashboardLinkNav = document.getElementById('dashboard-link-nav');
     const defaultProfilePic = '../images/default-avatar.png';
 
+    // --- Global State ---
     let currentUser = null;
     let currentPostId = null;
-    let currentPostData = null; // To store fetched post data
+    let currentPostData = null; // Stores the latest full post data
+    let mainPostFirebaseListener = null; // To hold the reference to the main .on() listener
+    let isLoaderHidden = false; // Tracks if the main page loader has been hidden
 
-    // Show loader initially
-    if (pageLoader) pageLoader.style.display = 'flex';
+    // --- Initializations ---
+    if (pageLoader) pageLoader.style.display = 'flex'; // Ensure loader is visible initially
     if (postMainContent) postMainContent.style.display = 'none';
 
+    currentPostId = getPostIdFromUrl();
+
+    if (currentPostId) {
+        initializePostView(currentPostId);
+    } else {
+        displayError("No post ID found in URL. Cannot load post.");
+        hidePageLoader(); // Hide loader if no ID, as nothing will load
+    }
 
     auth.onAuthStateChanged(user => {
+        const previousUserId = currentUser ? currentUser.uid : null;
+        
         if (user && user.emailVerified) {
             currentUser = user;
             loadUserProfileForNavbar(user);
-            if (signInBtnNav) signInBtnNav.style.display = 'none';
-            if (signOutBtnNav) signOutBtnNav.style.display = 'block';
-            if (profileLinkNav) profileLinkNav.style.display = 'block';
-            if (dashboardLinkNav) dashboardLinkNav.style.display = 'block';
-            if (commentLoginPrompt) commentLoginPrompt.style.display = 'none';
-            if (commentFormPlaceholder) commentFormPlaceholder.style.display = 'block'; // Show (disabled) form
-            setupNavbarEventListeners(true);
+            updateNavbarUI(true);
         } else {
-            currentUser = null;
-            if (userNameNav) userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> Guest`;
-            if (userProfilePictureNav) userProfilePictureNav.src = defaultProfilePic;
-            if (profileDropdown) profileDropdown.classList.remove('show');
-            if (signInBtnNav) signInBtnNav.style.display = 'block';
-            if (signOutBtnNav) signOutBtnNav.style.display = 'none';
-            if (profileLinkNav) profileLinkNav.style.display = 'none';
-            if (dashboardLinkNav) dashboardLinkNav.style.display = 'none';
-            if (commentLoginPrompt) commentLoginPrompt.style.display = 'block';
-            if (commentFormPlaceholder) commentFormPlaceholder.style.display = 'block'; // Still show placeholder, but emphasize login
-            setupNavbarEventListeners(false); // Setup limited listeners or clear existing ones
+            currentUser = null; // Handles guests or unverified users
+            updateNavbarUI(false);
         }
-        // Fetch post data after auth state is known
-        currentPostId = getPostIdFromUrl();
-        if (currentPostId) {
-            fetchPostData(currentPostId);
-        } else {
-            displayError("No post ID found in URL. Cannot load post.");
-            hidePageLoader();
+
+        // Refresh user-specific post elements if user changed or if post data is already loaded
+        if ((currentUser && currentUser.uid !== previousUserId) || (!currentUser && previousUserId) || currentPostData) {
+             updateUserSpecificPostElements();
         }
     });
-    
-    function toggleDropdown(e) {
-        e.stopPropagation();
-        if (profileDropdown) profileDropdown.classList.toggle('show');
-    }
 
-    function loadUserProfileForNavbar(user) {
-        if (!userProfilePictureNav || !userNameNav) return;
-        userProfilePictureNav.style.cursor = 'pointer';
-        const userRef = database.ref('users/' + user.uid);
-        userRef.once('value').then(snapshot => {
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                userProfilePictureNav.src = userData.profilePictureURL || defaultProfilePic;
-                userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${userData.name || user.displayName || 'User'}`;
-            } else {
-                userProfilePictureNav.src = user.photoURL || defaultProfilePic;
-                userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.displayName || 'User'}`;
-            }
-        }).catch(error => {
-            console.error("Error fetching user profile for navbar:", error);
-            userProfilePictureNav.src = user.photoURL || defaultProfilePic;
-            userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.displayName || 'User'}`;
-        });
-    }
-
-    function setupNavbarEventListeners(isLoggedIn) {
-        // Remove previous listener to avoid multiple attachments
-        if (userProfilePictureNav) userProfilePictureNav.removeEventListener('click', toggleDropdown);
-
-        if (isLoggedIn) {
-            if (userProfilePictureNav && profileDropdown) {
-                userProfilePictureNav.style.cursor = 'pointer';
-                userProfilePictureNav.addEventListener('click', toggleDropdown);
-            }
-            if (signOutBtnNav) {
-                signOutBtnNav.onclick = () => { // Use onclick to easily overwrite
-                    auth.signOut().then(() => {
-                        window.location.href = '../auth/auth.html';
-                    }).catch(error => console.error('Sign out error:', error));
-                };
-            }
-        } else {
-             if (userProfilePictureNav) userProfilePictureNav.style.cursor = 'default';
-             // For guests, clicking profile pic does nothing, sign out is hidden.
-        }
-        // Global click to close dropdown - always active
-        window.addEventListener('click', function(e) {
-            if (profileDropdown && profileDropdown.classList.contains('show') &&
-                userProfilePictureNav && !userProfilePictureNav.contains(e.target) &&
-                !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.remove('show');
-            }
-        });
-    }
-
+    // --- Core Functions ---
     function getPostIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
         return params.get('id');
     }
 
-    function fetchPostData(postId) {
+    function initializePostView(postId) {
         const postRef = database.ref('posts/' + postId);
-        postRef.on('value', snapshot => { // Use .on for real-time updates (e.g., likes)
+
+        // If a listener already exists (e.g. from a hot-reload dev environment), detach it first.
+        // This ensures only one listener is active for the main post data.
+        if (mainPostFirebaseListener) {
+            postRef.off('value', mainPostFirebaseListener);
+        }
+
+        mainPostFirebaseListener = postRef.on('value', snapshot => {
             if (snapshot.exists()) {
                 currentPostData = snapshot.val();
-                renderPost(currentPostData, postId);
+                renderPostBaseUI(currentPostData, postId); // Render parts not dependent on logged-in user
+                updateUserSpecificPostElements();        // Update parts dependent on user (like button, comments prompt)
+                
                 if (postMainContent) postMainContent.style.display = 'block';
-                fetchLikeStatus(postId); // Fetch like status after post data is loaded
+                if (errorMessageArea) errorMessageArea.style.display = 'none'; // Hide error if data loads
             } else {
-                displayError(`Post not found. It might have been abducted by aliens or never existed.`);
+                currentPostData = null; // Post deleted or doesn't exist
+                displayError(`Post not found. It might have been lost in a cosmic anomaly.`);
+                if (postMainContent) postMainContent.style.display = 'none';
             }
-            hidePageLoader();
+            hidePageLoader(); // Hide loader after first successful data fetch or "not found"
         }, error => {
             console.error("Error fetching post data:", error);
-            displayError(`Failed to load post data. Error: ${error.message}`);
-            hidePageLoader();
+            displayError(`Failed to beam down post data. Error: ${error.message}`);
+            if (postMainContent) postMainContent.style.display = 'none';
+            hidePageLoader(); // Hide loader on error too
         });
     }
 
-    function renderPost(data, postId) {
-        if (!data) return;
-
+    // Renders the main structure and content of the post (not user-specific things like "is liked")
+    function renderPostBaseUI(data, postId) {
         document.title = `${data.title || 'Post'} | Cosmic Chronicles`;
         if (postTitleDisplayHero) postTitleDisplayHero.textContent = data.title || 'Untitled Post';
-        
-        if (heroImageContainer && data.featuredImageUrl) {
-            heroImageContainer.style.backgroundImage = `url('${data.featuredImageUrl}')`;
-        } else if (heroImageContainer) {
-            heroImageContainer.style.backgroundImage = `url('../images/default-post-hero.jpg')`; // Fallback hero
-            heroImageContainer.style.backgroundColor = '#1A0F3B'; // Fallback background color
+
+        if (heroImageContainer) {
+            if (data.featuredImageUrl) {
+                heroImageContainer.style.backgroundImage = `url('${data.featuredImageUrl}')`;
+            } else {
+                heroImageContainer.style.backgroundImage = `url('../images/default-post-hero.jpg')`; // Fallback
+                heroImageContainer.style.backgroundColor = '#1A0F3B';
+            }
         }
 
         if (postAuthorImg) postAuthorImg.src = data.authorProfilePic || defaultProfilePic;
@@ -184,139 +132,223 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         if (postCategoryDisplay) postCategoryDisplay.textContent = data.category || 'Uncategorized';
-
-        if (postContentDisplay) {
-            postContentDisplay.innerHTML = data.content || '<p>No content available for this transmission.</p>';
-        }
-
-        // Update like count display
+        if (postContentDisplay) postContentDisplay.innerHTML = data.content || '<p>This transmission seems to be empty...</p>';
         if (likeCountSpan) likeCountSpan.textContent = data.likeCount || 0;
 
-        // Setup action buttons
-        setupActionListeners(postId, data.title);
+        // Setup share button listener (it's not user-specific to set up)
+        if (shareButton) {
+            shareButton.onclick = () => handleSharePost(postId, data.title);
+        }
+    }
+
+    // Updates UI elements that depend on the current logged-in user
+    function updateUserSpecificPostElements() {
+        if (!currentPostId) return; // No post to update elements for
+
+        // Like Button State
+        if (likeButton) {
+            if (currentUser && currentUser.uid) {
+                fetchLikeStatus(currentPostId, currentUser.uid);
+            } else { // Guest user
+                likeButton.classList.remove('liked');
+                const icon = likeButton.querySelector('i');
+                if (icon) icon.classList.replace('fas', 'far'); // Ensure outlined heart
+            }
+            // Ensure click listener is set (onclick overwrites, so it's safe to call)
+            likeButton.onclick = () => handleLikePost(currentPostId);
+        }
+
+        // Comment Section Prompt
+        if (commentLoginPrompt) {
+            commentLoginPrompt.style.display = currentUser ? 'none' : 'block';
+        }
+        // If you had a commentFormPlaceholder to enable/disable:
+        // if (commentFormPlaceholder) {
+        //     commentFormPlaceholder.querySelector('textarea').disabled = !currentUser;
+        //     commentFormPlaceholder.querySelector('button').disabled = !currentUser;
+        // }
+    }
+
+    // --- Navbar and User Profile ---
+    function updateNavbarUI(isLoggedIn) {
+        if (isLoggedIn) {
+            if (signInBtnNav) signInBtnNav.style.display = 'none';
+            if (signOutBtnNav) signOutBtnNav.style.display = 'block';
+            if (profileLinkNav) profileLinkNav.style.display = 'block';
+            if (dashboardLinkNav) dashboardLinkNav.style.display = 'block';
+            if (userProfilePictureNav) userProfilePictureNav.style.cursor = 'pointer';
+        } else {
+            if (userNameNav) userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> Guest`;
+            if (userProfilePictureNav) {
+                 userProfilePictureNav.src = defaultProfilePic;
+                 userProfilePictureNav.style.cursor = 'default';
+            }
+            if (profileDropdown) profileDropdown.classList.remove('show');
+            if (signInBtnNav) signInBtnNav.style.display = 'block';
+            if (signOutBtnNav) signOutBtnNav.style.display = 'none';
+            if (profileLinkNav) profileLinkNav.style.display = 'none';
+            if (dashboardLinkNav) dashboardLinkNav.style.display = 'none';
+        }
+        // Setup listeners for navbar interactions (dropdown toggle, sign out)
+        // Pass isLoggedIn to ensure correct behavior for profile pic click
+        setupNavbarEventListeners(isLoggedIn);
     }
     
+    function toggleDropdown(e) { // Renamed for clarity
+        e.stopPropagation();
+        if (profileDropdown) profileDropdown.classList.toggle('show');
+    }
+
+    function loadUserProfileForNavbar(user) {
+        if (!userProfilePictureNav || !userNameNav) return;
+        const userRef = database.ref('users/' + user.uid);
+        userRef.once('value').then(snapshot => {
+            const uData = snapshot.exists() ? snapshot.val() : {};
+            userProfilePictureNav.src = uData.profilePictureURL || user.photoURL || defaultProfilePic;
+            userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${uData.name || user.displayName || 'User'}`;
+        }).catch(error => {
+            console.error("Error fetching user profile for navbar:", error);
+            userProfilePictureNav.src = user.photoURL || defaultProfilePic; // Fallback
+            userNameNav.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.displayName || 'User'}`;
+        });
+    }
+
+    function setupNavbarEventListeners(isLoggedIn) {
+        // Remove any existing click listener on profile picture to avoid duplicates
+        if (userProfilePictureNav) userProfilePictureNav.removeEventListener('click', toggleDropdown);
+
+        if (isLoggedIn && userProfilePictureNav && profileDropdown) {
+            userProfilePictureNav.addEventListener('click', toggleDropdown);
+        }
+        
+        if (signOutBtnNav) { // Sign out button setup is independent of being logged in to attach listener
+            signOutBtnNav.onclick = () => { // Use onclick for simple assignment
+                auth.signOut().then(() => {
+                    // onAuthStateChanged will handle UI updates
+                }).catch(error => console.error('Sign out error:', error));
+            };
+        }
+
+        // Global click to close dropdown - always active
+        window.addEventListener('click', function(e) {
+            if (profileDropdown && profileDropdown.classList.contains('show') &&
+                userProfilePictureNav && !userProfilePictureNav.contains(e.target) &&
+                !profileDropdown.contains(e.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+    }
+    
+    // --- Post Actions (Like, Share) ---
+    function fetchLikeStatus(postId, userId) {
+        if (!likeButton) return; // No button to update
+        const likeRef = database.ref(`postLikes/${postId}/${userId}`);
+        likeRef.once('value', snapshot => {
+            const icon = likeButton.querySelector('i');
+            if (snapshot.exists() && snapshot.val() === true) {
+                likeButton.classList.add('liked');
+                if (icon) icon.classList.replace('far', 'fas');
+            } else {
+                likeButton.classList.remove('liked');
+                if (icon) icon.classList.replace('fas', 'far');
+            }
+        });
+    }
+
+    async function handleLikePost(postId) {
+        if (!currentUser) {
+            alert("Please log in or verify your email to like posts!");
+            return;
+        }
+
+        const postLikesUserRef = database.ref(`postLikes/${postId}/${currentUser.uid}`);
+        const postLikeCountRef = database.ref(`posts/${postId}/likeCount`);
+        const currentlyLiked = likeButton.classList.contains('liked');
+
+        // Optimistically update UI first for responsiveness
+        const icon = likeButton.querySelector('i');
+        if (currentlyLiked) {
+            likeButton.classList.remove('liked');
+            if (icon) icon.classList.replace('fas', 'far');
+            if (likeCountSpan && parseInt(likeCountSpan.textContent) > 0) {
+                 likeCountSpan.textContent = parseInt(likeCountSpan.textContent) - 1;
+            }
+        } else {
+            likeButton.classList.add('liked');
+            if (icon) icon.classList.replace('far', 'fas');
+             if (likeCountSpan) {
+                 likeCountSpan.textContent = (parseInt(likeCountSpan.textContent) || 0) + 1;
+            }
+        }
+        
+        try {
+            await database.runTransaction(postLikeCountRef, (currentLikeCount) => {
+                if (currentLikeCount === null) currentLikeCount = 0;
+                return currentlyLiked ? currentLikeCount - 1 : currentLikeCount + 1;
+            });
+            if (currentlyLiked) { // Was liked, now unliking
+                await postLikesUserRef.remove();
+            } else { // Was not liked, now liking
+                await postLikesUserRef.set(true);
+            }
+        } catch (error) {
+            console.error("Like transaction failed: ", error);
+            alert("Failed to update like. Please try again.");
+            // Revert optimistic UI update on error
+            if (currentlyLiked) { // It was liked, failed to unlike
+                likeButton.classList.add('liked');
+                if (icon) icon.classList.replace('far', 'fas');
+                 if (likeCountSpan) likeCountSpan.textContent = (parseInt(likeCountSpan.textContent) || 0) + 1;
+
+
+            } else { // It was not liked, failed to like
+                likeButton.classList.remove('liked');
+                if (icon) icon.classList.replace('fas', 'far');
+                if (likeCountSpan && parseInt(likeCountSpan.textContent) > 0) likeCountSpan.textContent = parseInt(likeCountSpan.textContent) - 1;
+            }
+        }
+    }
+
+    function handleSharePost(postId, postTitle) {
+        const postUrl = `${window.location.origin}${window.location.pathname}?id=${postId}`;
+        if (navigator.share) {
+            navigator.share({ title: postTitle || "Check out this post!", url: postUrl })
+                .catch((error) => console.log('Error sharing:', error));
+        } else {
+            navigator.clipboard.writeText(postUrl).then(() => {
+                if (shareTooltip) {
+                    shareTooltip.classList.add('show');
+                    setTimeout(() => { shareTooltip.classList.remove('show'); }, 2000);
+                }
+            }).catch(err => console.error('Failed to copy link: ', err));
+        }
+    }
+
+    // --- Utility Functions ---
     function hidePageLoader() {
-        if (pageLoader) {
+        if (pageLoader && !isLoaderHidden) { // Check if not already hidden
             pageLoader.style.opacity = '0';
             pageLoader.style.visibility = 'hidden';
-            // A short delay to allow fade out before removing display:flex,
-            // ensures main content doesn't jump if it appears too quickly.
             setTimeout(() => {
-                 if (pageLoader.style.opacity === '0') { // Check if it wasn't reactivated
+                // Check opacity again in case it was made visible again quickly
+                if (pageLoader.style.opacity === '0') {
                     pageLoader.style.display = 'none';
-                 }
-            }, 500); // Matches CSS transition time
+                    isLoaderHidden = true; // Mark as hidden
+                }
+            }, 500); // Matches CSS transition
         }
     }
 
     function displayError(message) {
         if (errorMessageArea) {
             errorMessageArea.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
-            errorMessageArea.className = 'message-area error';
             errorMessageArea.style.display = 'block';
         }
-        if (postMainContent) postMainContent.style.display = 'none';
     }
 
-    function setupActionListeners(postId, postTitle) {
-        if (likeButton) {
-            likeButton.onclick = () => handleLikePost(postId);
-        }
-        if (shareButton) {
-            shareButton.onclick = () => handleSharePost(postId, postTitle);
-        }
-        // Comment button is an <a>, no specific JS needed beyond auth check for form.
-    }
-
-    async function fetchLikeStatus(postId) {
-        if (currentUser && likeButton) {
-            const likeRef = database.ref(`postLikes/${postId}/${currentUser.uid}`);
-            likeRef.once('value', snapshot => {
-                if (snapshot.exists() && snapshot.val() === true) {
-                    likeButton.classList.add('liked');
-                    likeButton.querySelector('i').classList.replace('far', 'fas'); // Solid heart
-                } else {
-                    likeButton.classList.remove('liked');
-                    likeButton.querySelector('i').classList.replace('fas', 'far'); // Outline heart
-                }
-            });
-        } else if (likeButton) { // Not logged in, ensure default state
-             likeButton.classList.remove('liked');
-             if (likeButton.querySelector('i')) {
-                likeButton.querySelector('i').classList.replace('fas', 'far');
-             }
-        }
-    }
-
-    async function handleLikePost(postId) {
-        if (!currentUser) {
-            alert("Please log in to like posts!");
-            // Optionally, redirect to login: window.location.href = '../auth/auth.html';
-            return;
-        }
-
-        const postLikesUserRef = database.ref(`postLikes/${postId}/${currentUser.uid}`);
-        const postRef = database.ref(`posts/${postId}/likeCount`);
-
-        database.runTransaction(postRef, (currentLikeCount) => {
-            if (currentLikeCount === null) {
-                currentLikeCount = 0; // Initialize if not exists
-            }
-            const isCurrentlyLiked = likeButton.classList.contains('liked');
-            if (isCurrentlyLiked) {
-                return currentLikeCount - 1; // Unlike
-            } else {
-                return currentLikeCount + 1; // Like
-            }
-        }).then(result => {
-            if (result.committed) {
-                const isCurrentlyLiked = likeButton.classList.contains('liked');
-                if (isCurrentlyLiked) { // User was liked, now unliking
-                    postLikesUserRef.remove();
-                    likeButton.classList.remove('liked');
-                    likeButton.querySelector('i').classList.replace('fas', 'far');
-                } else { // User was not liked, now liking
-                    postLikesUserRef.set(true);
-                    likeButton.classList.add('liked');
-                    likeButton.querySelector('i').classList.replace('far', 'fas');
-                }
-                // The postRef.on('value') listener will update the likeCountSpan automatically
-            }
-        }).catch(error => {
-            console.error("Like transaction failed: ", error);
-            alert("Failed to update like. Please try again.");
-        });
-    }
-
-    function handleSharePost(postId, postTitle) {
-        const postUrl = `${window.location.origin}${window.location.pathname}?id=${postId}`;
-        if (navigator.share) { // Use Web Share API if available
-            navigator.share({
-                title: postTitle || "Check out this post!",
-                text: `I found this interesting post: ${postTitle}`,
-                url: postUrl,
-            })
-            .then(() => console.log('Successful share'))
-            .catch((error) => console.log('Error sharing', error));
-        } else { // Fallback to copy to clipboard
-            navigator.clipboard.writeText(postUrl).then(() => {
-                if (shareTooltip) {
-                    shareTooltip.classList.add('show');
-                    setTimeout(() => { shareTooltip.classList.remove('show'); }, 2000);
-                }
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                alert('Failed to copy link. You can manually copy the URL from your address bar.');
-            });
-        }
-    }
-    
     // Set current year in footer
     const currentYearSpan = document.getElementById('current-year');
     if (currentYearSpan) {
         currentYearSpan.textContent = new Date().getFullYear();
     }
-
-    // Initial call for auth state and post data is handled by onAuthStateChanged
 });
